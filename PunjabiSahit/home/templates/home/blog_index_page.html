@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }} | Punjabi Sahit{% endblock %}
+
+{% block content %}
+<main class="ft-container ft-py-lg" style="padding: var(--ft-space-6xl);">
+    <!-- FT-Style Section Header -->
+    <section style="border: 3px solid var(--ft-color-slate); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-lg); background-color: var(--ft-bg-card); padding: var(--ft-space-6) var(--ft-space-4); margin-bottom: var(--ft-space-12);">
+        <h1 style="font-family: var(--ft-font-headline); font-size: 2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ft-color-slate); padding: var(--ft-space-4) 0;; padding: var(--ft-space-6); border-bottom: 3px solid rgba(13, 118, 128, 0.2); margin-bottom: var(--ft-space-6);">{{ page.title }}</h1>
+    </section>
+
+    {% if page.intro %}
+    <div style="max-width: 700px; padding: var(--ft-space-6); border-left: 5px solid var(--ft-color-teal); background-color: rgba(255, 255, 255, 0.7); border-radius: var(--ft-radius-md); box-shadow: var(--ft-shadow-sm); margin-bottom: var(--ft-space-12);">
+        <div style="font-size: 1.125rem; line-height: 1.8; color: rgba(38, 42, 51, 0.9); padding: var(--ft-space-4);">{{ page.intro|richtext }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- FT Grid of Article Teasers -->
+    <div class="ft-grid ft-grid--3" style="padding: var(--ft-space-6); gap: var(--ft-space-4xl);" style="gap: var(--ft-space-3xl);">
+        {% for post in blog_posts %}
+        <article class="o-teaser" style="border: 2px solid rgba(13, 118, 128, 0.15); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-lg); background-color: var(--ft-bg-card);" style="padding: var(--ft-space-lg);">
+            {% if post.specific.featured_image %}
+            <div class="o-teaser__image-container">
+                {% image post.specific.featured_image fill-600x400 as img %}
+                <img src="{{ img.url }}" alt="{{ img.alt }}" class="o-teaser__image">
+            </div>
+            {% endif %}
+
+            <div>
+                {% if post.specific.tags.all %}
+                <span class="o-teaser__tag">{{ post.specific.tags.all.0.name }}</span>
+                {% endif %}
+
+                <h2 class="o-teaser__headline">
+                    <a href="{{ post.url }}">{{ post.title }}</a>
+                </h2>
+
+                <p class="o-teaser__standfirst">
+                    {{ post.specific.intro|truncatewords:25 }}
+                </p>
+
+                <div class="o-teaser__meta">
+                    {% with author=post.specific.authors.first %}
+                    <span class="o-teaser__author">{{ author.name|default:"Punjabi Sahit" }}</span>
+                    <time class="o-teaser__timestamp">{{ post.first_published_at|date:"F d, Y" }}</time>
+                    {% endwith %}
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <div style="grid-column: 1 / -1; border: 3px dashed rgba(13, 118, 128, 0.3); border-radius: var(--ft-radius-2xl); text-align: center; padding: var(--ft-space-6xl); background: var(--ft-bg-card); border: 1px solid rgba(13, 118, 128, 0.15);">
+            <h3 style="font-family: var(--ft-font-headline); font-size: 1.5rem; margin-bottom: var(--ft-space-6); padding: var(--ft-space-2) 0; color: var(--ft-color-slate);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">No articles yet</h3>
+            <p style="color: var(--ft-text-tertiary);">Check back soon for new content.</p>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

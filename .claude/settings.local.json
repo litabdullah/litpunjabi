@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(../venv/Scripts/python.exe manage.py shell:*)",
+      "Bash(../venv/Scripts/python.exe manage.py:*)",
+      "Bash(del:*)",
+      "Bash(..venvScriptspython.exe manage.py makemigrations)",
+      "Bash(\"../venv/Scripts/python.exe\" -m py_compile home/views.py)",
+      "Bash(\"../venv/Scripts/python.exe\" -m py_compile home/utils.py)",
+      "Bash(venv/Scripts/pip.exe freeze:*)",
+      "Bash(PunjabiSahit/requirements.txt)",
+      "Bash(find:*)",
+      "Bash(dir:*)",
+      "Bash(\"../venv/Scripts/pip.exe\" install gettext-tools)",
+      "Bash(\"../venv/Scripts/python.exe\" compile_translations.py)",
+      "Bash(\"../venv/Scripts/pip.exe\" install polib)",
+      "Bash(\"../venv/Scripts/python.exe\" compile_messages_polib.py)",
+      "Bash(\"../venv/Scripts/python.exe\" -c:*)",
+      "Bash(\"../venv/Scripts/python.exe\":*)",
+      "Bash(cat:*)",
+      "Bash(\"../venv/Scripts/pip.exe\" freeze)",
+      "Bash(requirements.txt)",
+      "Bash(findstr /N \"href=\"\"/\"\"\")",
+      "Bash(\"../venv/Scripts/python.exe\" create_author_pages.py)",
+      "Bash(\"../venv/Scripts/python.exe\" performance_benchmark.py)",
+      "Bash(copy:*)",
+      "Bash(\"../venv/Scripts/python.exe\" \"C:\\src\\PunjabiSahit\\fix_templates.py\")",
+      "Bash(\"../venv/Scripts/python.exe\" fix_templates.py)",
+      "Bash(..venvScriptspython.exe fix_text_spacing.py)",
+      "Bash(\"../venv/Scripts/python.exe\" \"C:\\src\\PunjabiSahit\\fix_text_spacing.py\")",
+      "Bash(../venv/Scripts/python.exe fix_text_spacing.py)",
+      "Bash(\"../venv/Scripts/python.exe\" fix_index_spacing.py)",
+      "Bash(\"../venv/Scripts/python.exe\" fix_card_spacing.py)",
+      "Bash(\"../venv/Scripts/python.exe\" fix_card_css_classes.py)",
+      "Bash(\"../venv/Scripts/python.exe\" fix_content_blocks.py)",
+      "Bash(\"../venv/Scripts/python.exe\" fix_all_elements_massive.py)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

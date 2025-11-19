@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block title %}{{ page.idiom_gurmukhi|truncatechars:50 }} | Punjabi Sahit Idioms{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ft-idiom-main {
+        font-family: var(--ft-font-gurmukhi);
+        font-size: 4.5rem;
+        font-weight: 700;
+        color: var(--ft-color-slate);
+        line-height: 1.1;
+        margin-bottom: var(--ft-space-lg);
+    }
+
+    .ft-tab-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--ft-space-2);
+        border-bottom: 2px solid rgba(13, 118, 128, 0.15);
+        margin-bottom: var(--ft-space-2xl);
+    }
+
+    .ft-tab-button {
+        padding: var(--ft-space-md) var(--ft-space-xl);
+        border: none;
+        border-bottom: 3px solid transparent;
+        background-color: var(--ft-bg-card);
+        font-family: var(--ft-font-body);
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--ft-text-tertiary);
+        cursor: pointer;
+        transition: var(--ft-transition-base);
+        white-space: nowrap;
+    }
+
+    .ft-tab-button:hover {
+        background-color: var(--ft-bg-card);
+        color: var(--ft-color-slate);
+    }
+
+    .ft-tab-button.active {
+        border-bottom-color: var(--ft-color-teal);
+        color: var(--ft-color-teal);
+        background-color: var(--ft-bg-card);
+    }
+
+    .ft-tab-content {
+        display: none;
+    }
+
+    .ft-tab-content.active {
+        display: block;
+    }
+
+    .ft-western-phrase-item {
+        display: flex;
+        align-items: start;
+        gap: var(--ft-space-3);
+        padding: var(--ft-space-lg);
+        background-color: #e0f2e9;
+        border-left: 4px solid #228B22;
+        margin-bottom: var(--ft-space-md);
+        transition: var(--ft-transition-base);
+    }
+
+    .ft-western-phrase-item:hover {
+        box-shadow: var(--ft-shadow-md);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="ft-container ft-py-lg" style="padding: var(--ft-space-6xl);">
+    <div style="max-width: 1100px; margin: 0 auto;">
+
+        <!-- Main Idiom Card -->
+        <div class="ft-headword-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-lg); padding: var(--ft-space-5xl); margin-bottom: var(--ft-space-3xl); margin-bottom: var(--ft-space-2xl); position: relative;">
+
+            <!-- ID Badge (Top Right) -->
+            {% if page.idiom_id %}
+            <div style="position: absolute; top: 24px; right: 24px;">
+                <span style="display: inline-block; padding: 8px 16px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background-color: var(--ft-color-teal); color: var(--ft-text-inverse); border-radius: var(--ft-radius-md);">
+                    ID: {{ page.idiom_id }}
+                </span>
+            </div>
+            {% endif %}
+
+            <!-- Main Idiom -->
+            <h1 class="ft-idiom-main">{{ page.idiom_gurmukhi }}</h1>
+
+            <!-- Shahmukhi -->
+            {% if page.idiom_shahmukhi %}
+            <div style="font-family: 'Noto Nastaliq Urdu', serif; font-size: 2rem; font-style: italic; color: var(--ft-text-tertiary); direction: rtl; margin-bottom: var(--ft-space-xl);">
+                {{ page.idiom_shahmukhi }}
+            </div>
+            {% endif %}
+
+            <!-- Romanization -->
+            <div style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-xl); margin-bottom: var(--ft-space-xl);">
+                <h3 style="font-size: 0.75rem; font-weight: 700; color: var(--ft-color-slate); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--ft-space-4);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Romanization</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--ft-space-4);">
+                    <div style="padding: var(--ft-space-6); background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-left: 5px solid var(--ft-color-teal); border-radius: var(--ft-radius-md); margin-bottom: var(--ft-space-4); box-shadow: var(--ft-shadow-sm);">
+                        <div style="font-size: 0.75rem; color: var(--ft-text-tertiary); font-weight: 600; margin-bottom: var(--ft-space-2); padding-top: var(--ft-space-1);">Simple</div>
+                        <div style="font-size: 1.25rem; font-weight: 600; color: var(--ft-color-slate); padding: var(--ft-space-2) 0;">{{ page.transliteration_roman_simple }}</div>
+                    </div>
+                    {% if page.transliteration_roman %}
+                    <div style="padding: var(--ft-space-6); background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-left: 5px solid var(--ft-color-teal); border-radius: var(--ft-radius-md); margin-bottom: var(--ft-space-4); box-shadow: var(--ft-shadow-sm);">
+                        <div style="font-size: 0.75rem; color: var(--ft-text-tertiary); font-weight: 600; margin-bottom: var(--ft-space-2); padding-top: var(--ft-space-1);">With Diacritics</div>
+                        <div style="font-size: 1.25rem; font-weight: 600; color: var(--ft-color-slate); padding: var(--ft-space-2) 0;">{{ page.transliteration_roman }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Definitions Section with Tabs -->
+        <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl); margin-bottom: var(--ft-space-2xl);">
+            <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                </svg>
+                Idiom Meanings
+            </h2>
+
+            <!-- Tab Navigation -->
+            <div class="ft-tab-nav">
+                <button class="ft-tab-button active" data-tab="gurmukhi-def">
+                    <span style="font-family: var(--ft-font-gurmukhi); font-size: 1.125rem;">ਗੁਰਮੁਖੀ</span>
+                </button>
+                <button class="ft-tab-button" data-tab="english-def">
+                    English
+                </button>
+                <button class="ft-tab-button" data-tab="shahmukhi-def">
+                    <span style="font-family: 'Noto Nastaliq Urdu', serif; font-size: 1.125rem;">شاہ مُکھی</span>
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div>
+                <!-- Gurmukhi Definition -->
+                <div id="gurmukhi-def" class="ft-tab-content active" style="border: 2px solid rgba(13, 118, 128, 0.15); border-radius: var(--ft-radius-lg); padding: var(--ft-space-6); background-color: var(--ft-bg-card); box-shadow: var(--ft-shadow-sm);">
+                    <div style="font-family: var(--ft-font-gurmukhi); font-size: 1.25rem; line-height: 2.2; padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5);; color: var(--ft-color-slate); padding: var(--ft-space-4); margin-bottom: var(--ft-space-4);">
+                        {{ page.definition_gurmukhi|linebreaksbr }}
+                    </div>
+                </div>
+
+                <!-- English Definition -->
+                <div id="english-def" class="ft-tab-content" style="border: 2px solid rgba(13, 118, 128, 0.15); border-radius: var(--ft-radius-lg); padding: var(--ft-space-6); background-color: var(--ft-bg-card); box-shadow: var(--ft-shadow-sm);">
+                    <div style="font-size: 1.0625rem; line-height: 1.8; color: var(--ft-color-slate); padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5); padding: var(--ft-space-4); margin-bottom: var(--ft-space-4);">
+                        {{ page.definition_english|linebreaksbr }}
+                    </div>
+                </div>
+
+                <!-- Shahmukhi Definition -->
+                <div id="shahmukhi-def" class="ft-tab-content" style="border: 2px solid rgba(13, 118, 128, 0.15); border-radius: var(--ft-radius-lg); padding: var(--ft-space-6); background-color: var(--ft-bg-card); box-shadow: var(--ft-shadow-sm);">
+                    <div style="font-family: 'Noto Nastaliq Urdu', serif; font-size: 1.5rem; line-height: 2; color: var(--ft-color-slate); direction: rtl; text-align: right;">
+                        {{ page.definition_shahmukhi|linebreaksbr }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Literal and Contextual Meanings -->
+        {% if page.literal_meaning or page.contextual_meaning %}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--ft-space-8); margin-bottom: var(--ft-space-8);">
+
+            <!-- Literal Meaning -->
+            {% if page.literal_meaning %}
+            <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Literal Meaning
+                </h2>
+                <div style="font-size: 1.0625rem; line-height: 1.8; color: var(--ft-color-slate); padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5); background-color: var(--ft-bg-card); padding: var(--ft-space-4); border-left: 4px solid var(--ft-color-oxford);">
+                    {{ page.literal_meaning|linebreaksbr }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Contextual Meaning -->
+            {% if page.contextual_meaning %}
+            <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                    </svg>
+                    Contextual Meaning
+                </h2>
+                <div style="font-size: 1.0625rem; line-height: 1.8; color: var(--ft-color-slate); padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5); background-color: var(--ft-bg-card); padding: var(--ft-space-4); border-left: 4px solid var(--ft-color-teal);">
+                    {{ page.contextual_meaning|linebreaksbr }}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+        {% endif %}
+
+        <!-- Western Phrase Equivalents -->
+        {% if page.western_phrase %}
+        <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl); margin-bottom: var(--ft-space-2xl);">
+            <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                </svg>
+                Equivalent Western Phrases
+            </h2>
+            <div>
+                {% for phrase in page.western_phrase %}
+                <div class="ft-western-phrase-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #228B22; flex-shrink: 0; margin-top: 2px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                    <span style="font-size: 1.125rem; font-weight: 500; color: var(--ft-color-slate); line-height: 1.6;">"{{ phrase }}"</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Example Usage -->
+        {% if page.example_usage %}
+        <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl); margin-bottom: var(--ft-space-2xl);">
+            <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                </svg>
+                Example Usage
+            </h2>
+            <div style="font-family: var(--ft-font-gurmukhi); font-size: 1.125rem; line-height: 1.8; color: var(--ft-color-slate); background-color: var(--ft-bg-card); padding: var(--ft-space-4); border-left: 4px solid var(--ft-color-teal);">
+                <div style="padding: var(--ft-space-4); line-height: 1.8;">{{ page.example_usage|richtext }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Cultural Notes -->
+        {% if page.cultural_notes %}
+        <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl); margin-bottom: var(--ft-space-2xl);">
+            <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                Cultural Notes
+            </h2>
+            <div style="font-size: 1.0625rem; line-height: 1.8; color: var(--ft-color-slate); padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5); padding: var(--ft-space-4); margin-bottom: var(--ft-space-4);">
+                {{ page.cultural_notes|richtext }}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Related Dictionary Entries -->
+        {% if page.related_entries.all %}
+        <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl); margin-bottom: var(--ft-space-2xl);">
+            <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                </svg>
+                Related Dictionary Entries
+            </h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--ft-space-4);">
+                {% for entry in page.related_entries.all %}
+                <a href="{{ entry.url }}" style="display: flex; align-items: center; gap: var(--ft-space-3); padding: var(--ft-space-4); background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); text-decoration: none; transition: var(--ft-transition-base);"
+                   onmouseover="this.style.backgroundColor='var(--ft-color-white)'; this.style.borderColor='var(--ft-color-teal)';"
+                   onmouseout="this.style.backgroundColor='var(--ft-color-paper)'; this.style.borderColor='var(--ft-color-grey-1)';">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="currentColor" style="color: var(--ft-color-teal); flex-shrink: 0;">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                        <div style="font-family: var(--ft-font-gurmukhi); font-size: 1.125rem; font-weight: 700; color: var(--ft-color-slate);">{{ entry.headword_gurmukhi }}</div>
+                        <div style="font-size: 0.875rem; color: var(--ft-text-tertiary);">{{ entry.headword_roman_simple }}</div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Navigation -->
+        <nav style="display: flex; justify-content: space-between; align-items: center; padding: var(--ft-space-6); background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md);">
+            <div>
+                {% with prev_sibling=page.get_prev_sibling %}
+                {% if prev_sibling %}
+                <a href="{{ prev_sibling.url }}" class="o-buttons o-buttons__secondary" style="display: inline-flex; align-items: center; gap: var(--ft-space-2);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    <div>
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Previous</div>
+                        <div style="font-family: var(--ft-font-gurmukhi); font-weight: 700;">{{ prev_sibling.idiom_gurmukhi|truncatechars:30 }}</div>
+                    </div>
+                </a>
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div>
+                {% with next_sibling=page.get_next_sibling %}
+                {% if next_sibling %}
+                <a href="{{ next_sibling.url }}" class="o-buttons o-buttons__secondary" style="display: inline-flex; align-items: center; gap: var(--ft-space-2);">
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Next</div>
+                        <div style="font-family: var(--ft-font-gurmukhi); font-weight: 700;">{{ next_sibling.idiom_gurmukhi|truncatechars:30 }}</div>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </nav>
+
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabButtons = document.querySelectorAll('.ft-tab-button');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.tab;
+
+                // Remove active class from all buttons and content
+                document.querySelectorAll('.ft-tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.ft-tab-content').forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

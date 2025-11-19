@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block title %}{{ page.phrase_gurmukhi|truncatechars:50 }} | Punjabi Sahit Phrases{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ft-phrase-main {
+        font-family: var(--ft-font-gurmukhi);
+        font-size: 4rem;
+        font-weight: 700;
+        color: var(--ft-color-slate);
+        line-height: 1.2;
+        margin-bottom: var(--ft-space-lg);
+    }
+
+    .ft-meaning-box {
+        background-color: var(--ft-bg-card);
+        border-left: 4px solid var(--ft-color-teal);
+        padding: var(--ft-space-xl);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="ft-container ft-py-lg" style="padding: var(--ft-space-6xl);">
+    <div style="max-width: 1100px; margin: 0 auto;">
+
+        <!-- Main Phrase Card -->
+        <div class="ft-headword-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-lg); padding: var(--ft-space-5xl); margin-bottom: var(--ft-space-3xl); margin-bottom: var(--ft-space-2xl); position: relative;">
+
+            <!-- Audio Button (Top Right) -->
+            {% if page.sound %}
+            <div style="position: absolute; top: 24px; right: 24px;">
+                <audio id="phrase-audio" src="{{ page.sound.url }}"></audio>
+                <button onclick="document.getElementById('phrase-audio').play()" class="ft-audio-btn" title="Play pronunciation" style="display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; background-color: var(--ft-color-teal); color: var(--ft-text-inverse); border-radius: 50%; cursor: pointer; transition: var(--ft-transition-base); border: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                </button>
+            </div>
+            {% endif %}
+
+            <!-- Main Phrase -->
+            <h1 class="ft-phrase-main">{{ page.phrase_gurmukhi }}</h1>
+
+            <!-- Shahmukhi -->
+            {% if page.phrase_shahmukhi %}
+            <div style="font-family: 'Noto Nastaliq Urdu', serif; font-size: 2rem; font-style: italic; color: var(--ft-text-tertiary); direction: rtl; margin-bottom: var(--ft-space-xl);">
+                {{ page.phrase_shahmukhi }}
+            </div>
+            {% endif %}
+
+            <!-- Romanization -->
+            <div style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-xl); margin-bottom: var(--ft-space-xl);">
+                <h3 style="font-size: 0.75rem; font-weight: 700; color: var(--ft-color-slate); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--ft-space-4);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Romanization</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--ft-space-4);">
+                    <div style="padding: var(--ft-space-6); background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-left: 5px solid var(--ft-color-teal); border-radius: var(--ft-radius-md); margin-bottom: var(--ft-space-4); box-shadow: var(--ft-shadow-sm);">
+                        <div style="font-size: 0.75rem; color: var(--ft-text-tertiary); font-weight: 600; margin-bottom: var(--ft-space-2); padding-top: var(--ft-space-1);">Simple</div>
+                        <div style="font-size: 1.25rem; font-weight: 600; color: var(--ft-color-slate); padding: var(--ft-space-2) 0;">{{ page.roman_simple }}</div>
+                    </div>
+                    {% if page.roman_diacritics %}
+                    <div style="padding: var(--ft-space-6); background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-left: 5px solid var(--ft-color-teal); border-radius: var(--ft-radius-md); margin-bottom: var(--ft-space-4); box-shadow: var(--ft-shadow-sm);">
+                        <div style="font-size: 0.75rem; color: var(--ft-text-tertiary); font-weight: 600; margin-bottom: var(--ft-space-2); padding-top: var(--ft-space-1);">With Diacritics</div>
+                        <div style="font-size: 1.25rem; font-weight: 600; color: var(--ft-color-slate); padding: var(--ft-space-2) 0;">{{ page.roman_diacritics }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- English Meaning -->
+            <div class="ft-meaning-box">
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--ft-color-teal); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">English Meaning</div>
+                <p style="font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate);">"{{ page.meaning_english }}"</p>
+            </div>
+        </div>
+
+        <!-- Explanation -->
+        {% if page.explanation %}
+        <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl); margin-bottom: var(--ft-space-2xl);">
+            <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Detailed Explanation
+            </h2>
+            <div style="font-size: 1.0625rem; line-height: 1.8; color: var(--ft-color-slate); padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5); padding: var(--ft-space-4); margin-bottom: var(--ft-space-4);">
+                <div style="padding: var(--ft-space-4); line-height: 1.8;">{{ page.explanation|richtext }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Two Column: Example Usage | Additional Info -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--ft-space-8); margin-bottom: var(--ft-space-8);">
+
+            <!-- Example Usage -->
+            {% if page.example_usage %}
+            <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                    </svg>
+                    Example Usage
+                </h2>
+                <div style="font-family: var(--ft-font-gurmukhi); font-size: 1.125rem; line-height: 2; padding: var(--ft-space-4); margin-bottom: var(--ft-space-4); color: var(--ft-color-slate); background-color: var(--ft-bg-card); padding: var(--ft-space-4); border-left: 4px solid var(--ft-color-teal);">
+                    <div style="padding: var(--ft-space-4); line-height: 1.8;">{{ page.example_usage|richtext }}</div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Additional Info -->
+            <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Additional Info
+                </h2>
+
+                {% if page.synonyms %}
+                <div style="margin-bottom: var(--ft-space-6); padding: var(--ft-space-4); border: 1px solid rgba(13, 118, 128, 0.1); border-radius: var(--ft-radius-md); background-color: rgba(255, 255, 255, 0.5);">
+                    <h3 style="font-weight: 600; color: var(--ft-color-slate); margin-bottom: var(--ft-space-4); padding-bottom: var(--ft-space-2); font-size: 0.9375rem;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Synonyms (ਸਮਾਨਾਰਥੀ)</h3>
+                    <div style="background-color: #e0f2e9; border: 2px solid #228B22; border-left: 6px solid #228B22; border-radius: var(--ft-radius-lg); padding: var(--ft-space-6); margin: var(--ft-space-6) 0; box-shadow: var(--ft-shadow-md);">
+                        <p style="font-family: var(--ft-font-gurmukhi); font-size: 1.125rem; color: #228B22;">{{ page.synonyms }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if page.source_reference %}
+                <div>
+                    <h3 style="font-weight: 600; color: var(--ft-color-slate); margin-bottom: var(--ft-space-4); padding-bottom: var(--ft-space-2); font-size: 0.9375rem;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Source</h3>
+                    <div style="background-color: var(--ft-color-ft-pink); border: 2px solid var(--ft-color-oxford); border-left: 6px solid var(--ft-color-oxford); border-radius: var(--ft-radius-lg); padding: var(--ft-space-6); margin: var(--ft-space-6) 0; box-shadow: var(--ft-shadow-md);">
+                        <p style="font-style: italic; color: var(--ft-color-slate);">{{ page.source_reference }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Related Dictionary Entries -->
+        {% if page.related_entries.all %}
+        <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl); margin-bottom: var(--ft-space-2xl);">
+            <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                </svg>
+                Related Dictionary Entries
+            </h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--ft-space-4);">
+                {% for entry in page.related_entries.all %}
+                <a href="{{ entry.url }}" style="display: flex; align-items: center; gap: var(--ft-space-3); padding: var(--ft-space-4); background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); text-decoration: none; transition: var(--ft-transition-base);"
+                   onmouseover="this.style.backgroundColor='var(--ft-color-white)'; this.style.borderColor='var(--ft-color-teal)';"
+                   onmouseout="this.style.backgroundColor='var(--ft-color-paper)'; this.style.borderColor='var(--ft-color-grey-1)';">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="currentColor" style="color: var(--ft-color-teal); flex-shrink: 0;">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                        <div style="font-family: var(--ft-font-gurmukhi); font-size: 1.125rem; font-weight: 700; color: var(--ft-color-slate);">{{ entry.headword_gurmukhi }}</div>
+                        <div style="font-size: 0.875rem; color: var(--ft-text-tertiary);">{{ entry.headword_roman_simple }}</div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Navigation -->
+        <nav style="display: flex; justify-content: space-between; align-items: center; padding: var(--ft-space-6); background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md);">
+            <div>
+                {% with prev_sibling=page.get_prev_sibling %}
+                {% if prev_sibling %}
+                <a href="{{ prev_sibling.url }}" class="o-buttons o-buttons__secondary" style="display: inline-flex; align-items: center; gap: var(--ft-space-2);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    <div>
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Previous</div>
+                        <div style="font-family: var(--ft-font-gurmukhi); font-weight: 700;">{{ prev_sibling.phrase_gurmukhi|truncatechars:30 }}</div>
+                    </div>
+                </a>
+                {% endif %}
+                {% endwith %}
+            </div>
+            <div>
+                {% with next_sibling=page.get_next_sibling %}
+                {% if next_sibling %}
+                <a href="{{ next_sibling.url }}" class="o-buttons o-buttons__secondary" style="display: inline-flex; align-items: center; gap: var(--ft-space-2);">
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Next</div>
+                        <div style="font-family: var(--ft-font-gurmukhi); font-weight: 700;">{{ next_sibling.phrase_gurmukhi|truncatechars:30 }}</div>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </nav>
+
+    </div>
+</main>
+{% endblock %}

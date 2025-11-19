@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }} | Punjabi Sahit{% endblock %}
+
+{% block extra_css %}
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+<style>
+    /* ============================================
+       EVENTS PAGE - FT ORIGAMI CUSTOMIZATIONS
+       ============================================ */
+
+    /* Filter Bar - FT Style */
+    .ft-filter-bar {
+        position: sticky;
+        top: 60px;
+        z-index: 30;
+        background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md);
+        padding: var(--ft-space-3xl);
+        margin-bottom: var(--ft-space-2xl);
+    }
+
+    /* View Toggle Buttons - FT Style */
+    .ft-view-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--ft-space-2);
+        padding: 0.75em 1.5em;
+        font-family: var(--ft-font-body);
+        font-weight: 600;
+        border: 1px solid var(--ft-color-grey-2);
+        background-color: var(--ft-bg-card);
+        color: var(--ft-color-slate);
+        transition: var(--ft-transition-base);
+        cursor: pointer;
+    }
+
+    .ft-view-toggle-btn:hover {
+        background-color: var(--ft-color-paper);
+    }
+
+    .ft-view-toggle-btn.active {
+        background-color: var(--ft-color-teal);
+        color: var(--ft-text-inverse);
+        border-color: var(--ft-color-teal);
+    }
+
+    /* Calendar Container - FT Style */
+    #calendar {
+        background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md);
+        padding: var(--ft-space-4xl);
+        box-shadow: var(--ft-shadow-md);
+    }
+
+    .fc .fc-button-primary {
+        background-color: var(--ft-color-teal);
+        border-color: var(--ft-color-teal);
+    }
+
+    .fc .fc-button-primary:hover {
+        background-color: #0a5a63;
+        border-color: #0a5a63;
+    }
+
+    .fc .fc-event {
+        background-color: var(--ft-color-teal);
+        border-color: var(--ft-color-teal);
+        cursor: pointer;
+    }
+
+    .fc .fc-event:hover {
+        background-color: var(--ft-color-oxford);
+    }
+
+    /* Event Card - FT Style */
+    .ft-event-card {
+        display: block;
+        background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md);
+        padding: var(--ft-space-4xl); margin-bottom: var(--ft-space-3xl);
+        text-decoration: none;
+        transition: var(--ft-transition-base);
+        border-left: 4px solid transparent;
+    }
+
+    .ft-event-card:hover {
+        box-shadow: var(--ft-shadow-md);
+        border-left-color: var(--ft-color-teal);
+        text-decoration: none;
+    }
+
+    .ft-event-date-badge {
+        min-width: 5rem;
+        text-align: center;
+        background: linear-gradient(135deg, var(--ft-color-paper), var(--ft-color-ft-pink));
+        color: var(--ft-color-teal);
+        padding: var(--ft-space-lg);
+        border: 1px solid rgba(13, 118, 128, 0.15);
+    }
+
+    .ft-event-title { font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); margin-bottom: var(--ft-space-lg); padding-bottom: var(--ft-space-sm);
+        transition: var(--ft-transition-base);
+    }
+
+    .ft-event-card:hover .ft-event-title {
+        color: var(--ft-color-teal);
+    }
+
+    .ft-event-detail {
+        display: flex;
+        align-items: center;
+        gap: var(--ft-space-2);
+        font-size: 0.9375rem;
+        color: var(--ft-text-secondary);
+        margin-bottom: var(--ft-space-sm);
+    }
+
+    .ft-event-detail svg {
+        width: 18px;
+        height: 18px;
+        color: var(--ft-color-teal);
+    }
+
+    .ft-event-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-radius: var(--ft-radius-md);
+        margin-top: var(--ft-space-md);
+    }
+
+    .ft-event-badge--upcoming {
+        background-color: var(--ft-color-teal);
+        color: var(--ft-text-inverse);
+    }
+
+    .ft-event-badge--past {
+        background-color: var(--ft-color-grey-2);
+        color: var(--ft-color-slate);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="ft-container ft-py-lg" style="padding: var(--ft-space-6xl);">
+    <!-- FT Section Header -->
+    <section style="border: 3px solid var(--ft-color-slate); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-lg); background-color: var(--ft-bg-card); padding: var(--ft-space-6) var(--ft-space-4); margin-bottom: var(--ft-space-12);">
+        <h1 style="font-family: var(--ft-font-headline); font-size: 2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ft-color-slate); padding: var(--ft-space-4) 0;; padding: var(--ft-space-6); border-bottom: 3px solid rgba(13, 118, 128, 0.2); margin-bottom: var(--ft-space-6);">{{ page.title }}</h1>
+        {% if page.intro %}
+        <div style="max-width: 700px; padding: var(--ft-space-6); border-left: 5px solid var(--ft-color-teal); background-color: rgba(255, 255, 255, 0.7); border-radius: var(--ft-radius-md); box-shadow: var(--ft-shadow-sm); margin-top: var(--ft-space-6); margin-bottom: var(--ft-space-8);">
+            <div style="font-size: 1rem; line-height: 1.8; color: var(--ft-text-secondary); padding: var(--ft-space-4);">{{ page.intro|richtext }}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- View Toggle Buttons -->
+    <div style="display: flex; justify-content: center; gap: var(--ft-space-3); margin-bottom: var(--ft-space-8);">
+        <button onclick="switchView('calendar')" id="calendarViewBtn" class="ft-view-toggle-btn active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Calendar View
+        </button>
+        <button onclick="switchView('list')" id="listViewBtn" class="ft-view-toggle-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+            List View
+        </button>
+    </div>
+
+    <!-- Calendar View -->
+    <div id="calendarView" style="margin-bottom: var(--ft-space-8);">
+        <div id="calendar" style="border: 3px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-2xl);"></div>
+    </div>
+
+    <!-- List View -->
+    <div id="listView" style="display: none;">
+
+        <!-- Filter Bar -->
+        <div class="ft-filter-bar" style="border: 2px solid rgba(13, 118, 128, 0.25); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-xl); padding: var(--ft-space-5xl); margin-bottom: var(--ft-space-5xl);">
+            <form method="get" action="" style="display: flex; flex-wrap: wrap; gap: var(--ft-space-4); align-items: end;">
+
+                <!-- Search Box -->
+                <div style="flex: 1; min-width: 260px;">
+                    <label class="o-forms-label">Search Events</label>
+                    <div style="position: relative;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ft-text-tertiary);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input type="text"
+                               name="q"
+                               value="{{ search_query|default:'' }}"
+                               placeholder="Search events..."
+                               class="o-forms-input__text"
+                               style="padding-left: 40px;"
+                               onchange="this.form.submit()">
+                    </div>
+                </div>
+
+                <!-- Time Filter -->
+                <div style="min-width: 180px;">
+                    <label class="o-forms-label">Time Period</label>
+                    <select name="time" class="o-forms-input__text" onchange="this.form.submit()">
+                        <option value="upcoming" {% if current_time_filter == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                        <option value="past" {% if current_time_filter == 'past' %}selected{% endif %}>Past Events</option>
+                        <option value="all" {% if current_time_filter == 'all' %}selected{% endif %}>All Events</option>
+                    </select>
+                </div>
+
+                <!-- Location Filter -->
+                <div style="min-width: 200px;">
+                    <label class="o-forms-label">Location</label>
+                    <input type="text"
+                           name="location"
+                           value="{{ current_location|default:'' }}"
+                           placeholder="Filter by location..."
+                           class="o-forms-input__text"
+                           onchange="this.form.submit()">
+                </div>
+
+                <!-- Results Count -->
+                <div style="padding-bottom: 10px;">
+                    <span style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 700; color: var(--ft-color-teal); margin-right: 8px;">{{ events.paginator.count }}</span>
+                    <span style="font-family: var(--ft-font-body); font-weight: 500; color: var(--ft-color-slate);">event{% if events.paginator.count != 1 %}s{% endif %}</span>
+                </div>
+
+                <!-- Clear Filters -->
+                {% if request.GET.urlencode %}
+                <div style="padding-bottom: 10px;">
+                    <a href="?" class="o-buttons o-buttons__secondary" style="font-size: 0.875rem; padding: 0.5em 1em;">
+                        Clear Filters
+                    </a>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Events List -->
+        <div>
+            {% for event in events %}
+            <a href="{{ event.url }}" class="ft-event-card" style="border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-lg);">
+                <div style="display: flex; flex-direction: column; gap: var(--ft-space-6);">
+                    <div style="display: flex; align-items: start; gap: var(--ft-space-6);">
+                        <!-- Date Badge -->
+                        <div class="ft-event-date-badge" style="border: 2px solid var(--ft-color-teal); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-lg);" style="flex-shrink: 0;">
+                            <p style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: var(--ft-space-1) 0;">{{ event.start_datetime|date:"M" }}</p>
+                            <p style="font-size: 2.5rem; font-weight: 700; line-height: 1; margin: var(--ft-space-2) 0; padding: var(--ft-space-2) 0;">{{ event.start_datetime|date:"d" }}</p>
+                            <p style="font-size: 0.875rem; font-weight: 600; padding: var(--ft-space-1) 0;">{{ event.start_datetime|date:"Y" }}</p>
+                        </div>
+
+                        <!-- Event Info -->
+                        <div style="flex: 1; min-width: 0; padding: var(--ft-space-4);">
+                            <h3 class="ft-event-title">{{ event.title }}</h3>
+
+                            <!-- Time -->
+                            <div class="ft-event-detail" style="padding: var(--ft-space-3) 0; margin: var(--ft-space-2) 0;">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span style="font-weight: 600;">
+                                    {{ event.start_datetime|time:"g:i A" }}
+                                    {% if event.end_datetime %}
+                                    - {{ event.end_datetime|time:"g:i A" }}
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <!-- Location -->
+                            {% if event.location %}
+                            <div class="ft-event-detail" style="padding: var(--ft-space-3) 0; margin: var(--ft-space-2) 0;">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>{{ event.location }}</span>
+                            </div>
+                            {% endif %}
+
+                            <!-- Description Preview -->
+                            {% if event.description %}
+                            <p style="font-size: 0.875rem; line-height: 1.6; color: var(--ft-text-secondary); margin-top: var(--ft-space-6); padding: var(--ft-space-4) 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                {{ event.description|striptags|truncatewords:25 }}
+                            </p>
+                            {% endif %}
+
+                            <!-- Status Badge -->
+                            {% now "U" as current_timestamp %}
+                            {% if event.start_datetime.timestamp > current_timestamp|add:"0" %}
+                            <span class="ft-event-badge" style="box-shadow: var(--ft-shadow-sm); padding: var(--ft-space-3) var(--ft-space-4);" ft-event-badge--upcoming">Upcoming</span>
+                            {% else %}
+                            <span class="ft-event-badge" style="box-shadow: var(--ft-shadow-sm); padding: var(--ft-space-3) var(--ft-space-4);" ft-event-badge--past">Past Event</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Arrow Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-grey-2); transition: var(--ft-transition-base); flex-shrink: 0; margin-top: 8px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div style="padding: 64px 32px; text-align: center; background: var(--ft-bg-card); border: 1px solid rgba(13, 118, 128, 0.15);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-grey-2); margin: 0 auto 24px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <h3 style="font-family: var(--ft-font-headline); font-size: 1.25rem; margin-bottom: var(--ft-space-4); padding-bottom: var(--ft-space-2); color: var(--ft-color-slate);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">No events found</h3>
+                <p style="color: var(--ft-text-tertiary); margin-bottom: var(--ft-space-6); padding: var(--ft-space-2) var(--ft-space-4);">Try adjusting your filters or check back later for new events</p>
+                {% if request.GET.urlencode %}
+                <a href="?" class="o-buttons o-buttons__primary">Clear All Filters</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination Controls -->
+        {% if events.paginator.num_pages > 1 %}
+        <div style="margin-top: var(--ft-space-8); padding: var(--ft-space-6); display: flex; justify-content: center; background-color: rgba(255, 255, 255, 0.3); border-radius: var(--ft-radius-lg); align-items: center; gap: var(--ft-space-3); flex-wrap: wrap;">
+            {% if events.has_previous %}
+            <a href="?page={{ events.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.time %}&time={{ request.GET.time }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}"
+               class="o-buttons o-buttons__secondary">
+                ← Previous
+            </a>
+            {% endif %}
+
+            <span style="padding: 0.75em 1.5em; font-family: var(--ft-font-body); font-weight: 600; color: var(--ft-color-slate);">
+                Page {{ events.number }} of {{ events.paginator.num_pages }}
+            </span>
+
+            {% if events.has_next %}
+            <a href="?page={{ events.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.time %}&time={{ request.GET.time }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}"
+               class="o-buttons o-buttons__secondary">
+                Next →
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div><!-- End List View -->
+</main>
+
+{% block extra_js %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        // Prepare events data
+        var events = [
+            {% for event in all_events %}
+            {
+                title: '{{ event.title|escapejs }}',
+                start: '{{ event.start_datetime|date:"c" }}',
+                {% if event.end_datetime %}
+                end: '{{ event.end_datetime|date:"c" }}',
+                {% endif %}
+                url: '{{ event.url }}',
+                extendedProps: {
+                    location: '{{ event.location|escapejs }}',
+                    {% if event.description %}
+                    description: '{{ event.description|escapejs|truncatewords:20 }}'
+                    {% endif %}
+                }
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listWeek'
+            },
+            events: events,
+            eventClick: function(info) {
+                info.jsEvent.preventDefault();
+                if (info.event.url) {
+                    window.location.href = info.event.url;
+                }
+            },
+            eventContent: function(arg) {
+                return {
+                    html: '<div class="fc-event-title">' + arg.event.title + '</div>'
+                };
+            }
+        });
+
+        calendar.render();
+    });
+
+    // View switcher function
+    function switchView(view) {
+        const calendarView = document.getElementById('calendarView');
+        const listView = document.getElementById('listView');
+        const calendarBtn = document.getElementById('calendarViewBtn');
+        const listBtn = document.getElementById('listViewBtn');
+
+        if (view === 'calendar') {
+            calendarView.style.display = 'block';
+            listView.style.display = 'none';
+            calendarBtn.classList.add('active');
+            listBtn.classList.remove('active');
+        } else {
+            calendarView.style.display = 'none';
+            listView.style.display = 'block';
+            calendarBtn.classList.remove('active');
+            listBtn.classList.add('active');
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

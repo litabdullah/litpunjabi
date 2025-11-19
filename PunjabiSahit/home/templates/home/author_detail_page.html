@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.author.name_english|default:page.author.name }} | Punjabi Sahit{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ft-author-photo {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        box-shadow: var(--ft-shadow-lg);
+        border: 4px solid var(--ft-color-white);
+    }
+
+    .ft-social-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background-color: var(--ft-bg-card);
+        color: var(--ft-color-teal);
+        transition: var(--ft-transition-base);
+        text-decoration: none;
+    }
+
+    .ft-social-link:hover {
+        background-color: var(--ft-color-teal);
+        color: var(--ft-text-inverse);
+        transform: translateY(-2px);
+        box-shadow: var(--ft-shadow-md);
+    }
+
+    .ft-content-card {
+        background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md);
+        border-left: 4px solid transparent;
+        transition: var(--ft-transition-base);
+        text-decoration: none;
+        display: block;
+    }
+
+    .ft-content-card:hover {
+        border-left-color: var(--ft-color-teal);
+        box-shadow: var(--ft-shadow-md);
+        transform: translateX(4px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="ft-container ft-py-lg" style="padding: var(--ft-space-6xl);">
+    {% if page.author %}
+    <div style="max-width: 1200px; margin: 0 auto;">
+
+        <!-- Author Header -->
+        <div class="ft-headword-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-lg); padding: var(--ft-space-5xl); margin-bottom: var(--ft-space-3xl); margin-bottom: var(--ft-space-2xl);">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: var(--ft-space-xl); text-align: center;">
+
+                <!-- Profile Photo -->
+                <div>
+                    {% if page.author.profile_photo %}
+                        {% image page.author.profile_photo fill-200x200 as photo %}
+                        <img src="{{ photo.url }}" alt="{{ page.author.name_english|default:page.author.name }}" class="ft-author-photo">
+                    {% elif page.author.profile_image %}
+                        <img src="{{ page.author.profile_image }}" alt="{{ page.author.name_english|default:page.author.name }}" class="ft-author-photo">
+                    {% else %}
+                        <div class="ft-author-photo" style="background: linear-gradient(135deg, var(--ft-color-grey-1), var(--ft-color-paper)); display: flex; align-items: center; justify-content: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-text-tertiary);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Author Names -->
+                <div style="width: 100%;">
+                    {% if page.author.name_gurmukhi %}
+                    <h1 style="font-family: var(--ft-font-gurmukhi); font-size: 3.5rem; font-weight: 700; color: var(--ft-color-slate); margin-bottom: 12px;; padding: var(--ft-space-6); border-bottom: 3px solid rgba(13, 118, 128, 0.2); margin-bottom: var(--ft-space-6);">
+                        {{ page.author.name_gurmukhi }}
+                    </h1>
+                    {% endif %}
+                    <h2 style="font-family: var(--ft-font-headline); font-size: 2rem; font-weight: 600; color: var(--ft-text-tertiary); margin-bottom: var(--ft-space-lg);; padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-6);">
+                        {{ page.author.name_english|default:page.author.name }}
+                    </h2>
+
+                    <!-- Life Dates and Location -->
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: var(--ft-space-lg); margin-bottom: var(--ft-space-lg); color: var(--ft-text-tertiary);">
+                        {% if page.author.birth_date or page.author.death_date %}
+                        <div style="display: flex; align-items: center; gap: var(--ft-space-2);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span style="font-weight: 600;">
+                                {% if page.author.birth_date %}{{ page.author.birth_date|date:"F j, Y" }}{% endif %}
+                                {% if page.author.death_date %} – {{ page.author.death_date|date:"F j, Y" }}{% elif page.author.birth_date %} – Present{% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        {% if page.author.birthplace %}
+                        <div style="display: flex; align-items: center; gap: var(--ft-space-2);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span>{{ page.author.birthplace }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Literary Style -->
+                    {% if page.author.literary_style %}
+                    <div style="margin-bottom: var(--ft-space-lg);">
+                        <span style="display: inline-block; padding: 8px 16px; font-size: 0.875rem; font-weight: 700; text-transform: uppercase; background-color: var(--ft-color-oxford); color: var(--ft-text-inverse); border-radius: var(--ft-radius-md);">
+                            {{ page.author.literary_style }}
+                        </span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Social Media Links -->
+                    {% if page.author.website or page.author.wikipedia_link or page.author.facebook or page.author.twitter or page.author.instagram %}
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: var(--ft-space-3); margin-bottom: var(--ft-space-lg);">
+                        {% if page.author.website %}
+                        <a href="{{ page.author.website }}" target="_blank" rel="noopener noreferrer" class="ft-social-link" title="Website">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        {% if page.author.wikipedia_link %}
+                        <a href="{{ page.author.wikipedia_link }}" target="_blank" rel="noopener noreferrer" class="ft-social-link" title="Wikipedia">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.09 13.119c-.936 1.932-2.217 4.548-2.853 5.728-.616 1.074-1.127.931-1.532.029-1.406-3.321-4.293-9.144-5.651-12.409-.251-.601-.441-.987-.619-1.139-.181-.15-.554-.24-1.122-.271C.103 5.033 0 4.982 0 4.898v-.455l.052-.045c.924-.073 5.7-.074 6.297-.074.152 0 .297.009.433.023.303.024.545.085.67.145.118.057.13.133.13.224v.457c0 .102-.039.145-.123.184-.205.105-.44.168-.692.186-.379.023-.554.055-.554.255 0 .132.056.296.169.494.441.77 2.071 3.498 3.02 5.117.211-.389.469-.854.719-1.338.456-.883 1.047-2.027 1.047-2.027.012-.021.024-.043.035-.062.111-.225.179-.431.179-.607 0-.214-.113-.331-.491-.421-.314-.075-.629-.124-.909-.186-.102-.021-.143-.074-.143-.155v-.434c0-.097.048-.155.145-.155.359 0 .979.03 1.343.03 1.411 0 3.044-.09 3.464-.09.094 0 .145.055.145.134v.435c0 .103-.053.161-.165.191-.516.137-1.105.263-1.394.397-.234.107-.414.194-.629.387-.375.348-.797.875-1.214 1.567-1.064 1.765-2.933 5.019-3.638 6.281-.295.528-.436.652-.69.652-.238 0-.379-.116-.69-.652zm15.911-8.887c.102-.102.188-.155.291-.155.31 0 .648.085.987.256.405.204.658.379.91.688.135.165.221.31.221.465 0 .121-.06.226-.165.316l-1.98 1.968c-.085.084-.188.126-.291.126-.102 0-.188-.042-.273-.126l-2.073-2.041c-.102-.102-.151-.188-.151-.291s.049-.188.151-.29l2.073-2.073 2.3 2.157z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        {% if page.author.facebook %}
+                        <a href="{{ page.author.facebook }}" target="_blank" rel="noopener noreferrer" class="ft-social-link" title="Facebook">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        {% if page.author.twitter %}
+                        <a href="{{ page.author.twitter }}" target="_blank" rel="noopener noreferrer" class="ft-social-link" title="Twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        {% if page.author.instagram %}
+                        <a href="{{ page.author.instagram }}" target="_blank" rel="noopener noreferrer" class="ft-social-link" title="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- View Count -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--ft-text-tertiary); font-size: 0.875rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        <span>{{ page.author.view_count }} profile views</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--ft-space-2xl);">
+
+            <!-- Left Column: Biography, Awards, Works -->
+            <div style="display: flex; flex-direction: column; gap: var(--ft-space-2xl);">
+
+                <!-- Biography (English) -->
+                {% if page.author.biography_english or page.author.bio %}
+                <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                    <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        Biography
+                    </h2>
+                    <div style="font-size: 1.0625rem; line-height: 1.8; color: var(--ft-color-slate); padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5); padding: var(--ft-space-4); margin-bottom: var(--ft-space-4);">
+                        {{ page.author.biography_english|richtext|default:page.author.bio }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Biography (Gurmukhi) -->
+                {% if page.author.biography_gurmukhi %}
+                <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                    <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-gurmukhi); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6);">
+                        ਜੀਵਨੀ
+                    </h2>
+                    <div style="font-family: var(--ft-font-gurmukhi); font-size: 1.25rem; line-height: 2.2; padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5);; color: var(--ft-color-slate); padding: var(--ft-space-4); margin-bottom: var(--ft-space-4);">
+                        {{ page.author.biography_gurmukhi|richtext }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Awards -->
+                {% if page.author.awards %}
+                <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                    <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                        </svg>
+                        Awards & Achievements
+                    </h2>
+                    <div style="font-size: 1.0625rem; line-height: 1.8; color: var(--ft-color-slate); padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5); padding: var(--ft-space-4); margin-bottom: var(--ft-space-4);">
+                        {{ page.author.awards|richtext }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Books -->
+                {% if books %}
+                <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                    <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        Books by {{ page.author.name_english|default:page.author.name }}
+                    </h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--ft-space-lg);">
+                        {% for book in books %}
+                        <a href="{{ book.url }}" class="ft-content-card" style="padding: var(--ft-space-lg); display: flex; gap: var(--ft-space-3); border-radius: var(--ft-radius-md);">
+                            {% if book.cover_image %}
+                                {% image book.cover_image fill-80x120 as cover %}
+                                <img src="{{ cover.url }}" alt="{{ book.title_english|default:book.title_gurmukhi }}" style="width: 64px; height: 96px; object-fit: cover; border-radius: var(--ft-radius-md); box-shadow: var(--ft-shadow-md);">
+                            {% else %}
+                                <div style="width: 64px; height: 96px; background: linear-gradient(135deg, var(--ft-color-grey-1), var(--ft-color-paper)); border-radius: var(--ft-radius-md); display: flex; align-items: center; justify-content: center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                            <div style="flex: 1; min-width: 0;">
+                                <h3 style="font-weight: 700; color: var(--ft-color-slate); margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">{{ book.title_english|default:book.title_gurmukhi }}</h3>
+                                {% if book.publication_year %}
+                                <p style="font-size: 0.875rem; color: var(--ft-text-tertiary); line-height: 1.6; margin-bottom: var(--ft-space-3);">{{ book.publication_year }}</p>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Blog Posts -->
+                {% if blog_posts %}
+                <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                    <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                        </svg>
+                        Articles & Posts
+                    </h2>
+                    <div style="display: flex; flex-direction: column; gap: var(--ft-space-md);">
+                        {% for post in blog_posts %}
+                        <a href="{{ post.url }}" class="ft-content-card" style="padding: var(--ft-space-lg); border-radius: var(--ft-radius-md);">
+                            <h3 style="font-weight: 700; color: var(--ft-color-slate); margin-bottom: 8px;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">{{ post.title }}</h3>
+                            <p style="font-size: 0.875rem; color: var(--ft-text-tertiary); line-height: 1.6; margin-bottom: var(--ft-space-3); margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ post.excerpt|striptags|truncatewords:20 }}</p>
+                            <p style="font-size: 0.75rem; color: var(--ft-text-tertiary);">{{ post.first_published_at|date:"F j, Y" }}</p>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Events -->
+                {% if events %}
+                <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-2xl);">
+                    <h2 class="ft-section-heading" style="padding: var(--ft-space-5) 0; margin-bottom: var(--ft-space-6); border-bottom: 2px solid rgba(13, 118, 128, 0.15);" style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 600; color: var(--ft-color-slate); border-bottom: 2px solid rgba(13, 118, 128, 0.15); padding-bottom: 12px; margin-bottom: var(--ft-space-6); display: flex; align-items: center; gap: var(--ft-space-3);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-teal);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        Events & Appearances
+                    </h2>
+                    <div style="display: flex; flex-direction: column; gap: var(--ft-space-md);">
+                        {% for event in events %}
+                        <a href="{{ event.url }}" class="ft-content-card" style="padding: var(--ft-space-lg); border-radius: var(--ft-radius-md);">
+                            <h3 style="font-weight: 700; color: var(--ft-color-slate); margin-bottom: 8px;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">{{ event.title }}</h3>
+                            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.875rem; color: var(--ft-text-tertiary); margin-bottom: 4px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>{{ event.start_datetime|date:"F j, Y - g:i A" }}</span>
+                            </div>
+                            {% if event.location %}
+                            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.875rem; color: var(--ft-text-tertiary);">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                <span>{{ event.location }}</span>
+                            </div>
+                            {% endif %}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Right Column: Quick Facts, Featured Badge -->
+            <div style="display: flex; flex-direction: column; gap: var(--ft-space-2xl);">
+
+                <!-- Quick Facts -->
+                <div class="ft-section-card" style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); padding: var(--ft-space-xl);">
+                    <h3 style="font-family: var(--ft-font-headline); font-size: 1.25rem; font-weight: 700; color: var(--ft-color-slate); margin-bottom: var(--ft-space-lg);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Quick Facts</h3>
+                    <div style="display: flex; flex-direction: column; gap: var(--ft-space-md); font-size: 0.875rem;">
+                        {% if page.author.birthplace %}
+                        <div>
+                            <div style="font-weight: 600; color: var(--ft-text-tertiary); margin-bottom: 4px;">Birthplace</div>
+                            <div style="color: var(--ft-color-slate);">{{ page.author.birthplace }}</div>
+                        </div>
+                        {% endif %}
+                        {% if page.author.location %}
+                        <div>
+                            <div style="font-weight: 600; color: var(--ft-text-tertiary); margin-bottom: 4px;">Current Location</div>
+                            <div style="color: var(--ft-color-slate);">{{ page.author.location }}</div>
+                        </div>
+                        {% endif %}
+                        {% if page.author.literary_style %}
+                        <div>
+                            <div style="font-weight: 600; color: var(--ft-text-tertiary); margin-bottom: 4px;">Literary Style</div>
+                            <div style="color: var(--ft-color-slate);">{{ page.author.literary_style }}</div>
+                        </div>
+                        {% endif %}
+                        {% if books %}
+                        <div>
+                            <div style="font-weight: 600; color: var(--ft-text-tertiary); margin-bottom: 4px;">Books Published</div>
+                            <div style="color: var(--ft-color-slate);">{{ books|length }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Featured Badge -->
+                {% if page.author.is_featured %}
+                <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #fbbf24; border-radius: var(--ft-radius-md); padding: var(--ft-space-xl); text-align: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #d97706; margin: 0 auto 12px; display: block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                    <p style="color: #92400e; font-weight: 700; font-size: 1.125rem;">Featured Author</p>
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+    {% else %}
+    <!-- No Author Data -->
+    <div style="text-align: center; padding: var(--ft-space-3xl);">
+        <p style="color: var(--ft-text-tertiary); font-size: 1.125rem;">Author information not available.</p>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

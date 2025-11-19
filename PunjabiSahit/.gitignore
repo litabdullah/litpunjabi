@@ -1,0 +1,104 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/static/
+/media/
+
+# Wagtail
+/static_compiled/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Documentation
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Backup files
+*.bak
+*.tmp
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Node (if using npm/yarn)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Compiled files
+*.pyc
+*.pyo
+
+# Database
+*.sqlite3
+*.db
+
+# Secrets
+secrets.json
+credentials.json
+
+# Logs
+logs/
+*.log
+
+# Local configuration
+local_settings.py

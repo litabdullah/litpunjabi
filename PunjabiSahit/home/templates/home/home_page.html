@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}Punjabi Sahit - Digital Treasury of Punjabi Language & Literature{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* FT-Specific Homepage Styles */
+    .ft-hero {
+        background: linear-gradient(135deg, var(--ft-color-paper) 0%, #fff8f0 100%);
+        border-bottom: 3px solid var(--ft-color-teal);
+        padding: var(--ft-space-12) 0;
+    }
+
+    .ft-hero__title {
+        font-family: var(--ft-font-headline);
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--ft-color-slate);
+        margin-bottom: var(--ft-space-6);
+    }
+
+    .ft-hero__subtitle {
+        font-size: 1.25rem;
+        line-height: 1.6;
+        color: var(--ft-text-secondary);
+        max-width: 600px;
+    }
+
+    .ft-stats {
+        background: var(--ft-bg-card);
+        border-top: 1px solid rgba(13, 118, 128, 0.15);
+        border-bottom: 1px solid rgba(13, 118, 128, 0.15);
+        padding: var(--ft-space-8) 0;
+    }
+
+    .ft-stat__number {
+        font-family: var(--ft-font-headline);
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--ft-color-slate);
+    }
+
+    .ft-stat__label {
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ft-text-tertiary);
+        margin-top: 8px;
+    }
+
+    .ft-feature-card {
+        background: var(--ft-bg-card);
+        border: 1px solid rgba(13, 118, 128, 0.15);
+        padding: var(--ft-space-8);
+        transition: var(--ft-transition-base);
+    }
+
+    .ft-feature-card:hover {
+        box-shadow: var(--ft-shadow-md);
+        transform: translateY(-2px);
+    }
+
+    .ft-feature-card__icon {
+        width: 48px;
+        height: 48px;
+        background: var(--ft-color-teal);
+        color: var(--ft-text-inverse);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: var(--ft-space-4);
+    }
+
+    .ft-trending-tag {
+        display: inline-block;
+        background: var(--ft-bg-card);
+        border: 1px solid rgba(13, 118, 128, 0.15);
+        padding: 8px 16px;
+        font-weight: 600;
+        transition: var(--ft-transition-base);
+        margin: 4px;
+    }
+
+    .ft-trending-tag:hover {
+        background: var(--ft-color-teal);
+        color: var(--ft-text-inverse);
+        border-color: var(--ft-color-teal);
+        text-decoration: none;
+    }
+
+    @media (min-width: 768px) {
+        .ft-hero__title {
+            font-size: 4rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- FT Hero Section -->
+<section class="ft-hero">
+    <div class="ft-container">
+        <div class="ft-grid ft-grid--4-2" style="padding: var(--ft-space-6); gap: var(--ft-space-4xl);" style="align-items: center;">
+            <div>
+                <h1 class="ft-hero__title">
+                    A Digital Treasury of <br>
+                    <span style="color: var(--ft-color-teal);">Punjabi Language & Literature</span>
+                </h1>
+                <p class="ft-hero__subtitle">
+                    Explore a rich collection of <strong>{{ stats.words|default:"thousands of" }} words</strong>,
+                    <strong>{{ stats.phrases }} phrases</strong>, <strong>{{ stats.idioms }} idioms</strong>,
+                    and literary works. Your journey into the heart of Punjabi culture starts here.
+                </p>
+
+                <!-- Search Bar -->
+                <form action="/search/" method="get" style="margin-top: var(--ft-space-8);">
+                    <div style="position: relative;">
+                        <input type="search" name="query" placeholder="Search for words, phrases, idioms..."
+                               class="o-forms-input__text" style="padding-left: 48px; font-size: 1rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--ft-text-tertiary);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </form>
+
+                <!-- CTA Buttons -->
+                <div style="margin-top: var(--ft-space-6); display: flex; gap: var(--ft-space-4); flex-wrap: wrap;">
+                    <a href="/dictionary/" class="o-buttons o-buttons__primary">Explore Dictionary</a>
+                    <a href="/blog/" class="o-buttons o-buttons__secondary">Read Blog</a>
+                </div>
+            </div>
+
+            <!-- Featured Phrase Card -->
+            {% if featured_page %}
+            <div style="background: var(--ft-bg-card); border: 2px solid var(--ft-color-teal); padding: var(--ft-space-8);">
+                <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ft-color-teal); font-weight: 700;">Phrase of the Day</span>
+                <h3 class="gurmukhi" style="font-size: 2rem; font-weight: 700; margin-top: var(--ft-space-4); color: var(--ft-color-slate);">
+                    {{ featured_page.phrase_gurmukhi }}
+                </h3>
+                <p style="margin-top: 12px; color: var(--ft-text-secondary); font-weight: 600;">
+                    {{ featured_page.roman_simple }}
+                </p>
+                <p style="margin-top: 12px; font-style: italic; color: var(--ft-text-tertiary);">
+                    "{{ featured_page.meaning_english }}"
+                </p>
+                <a href="{{ featured_page.url }}" style="display: inline-block; margin-top: var(--ft-space-4); color: var(--ft-color-teal); font-weight: 700;">
+                    Learn More →
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="ft-stats">
+    <div class="ft-container">
+        <div class="ft-grid ft-grid--2" style="padding: var(--ft-space-6); gap: var(--ft-space-4xl);" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); text-align: center;">
+            <div>
+                <div class="ft-stat__number" data-count="{{ stats.words }}">0</div>
+                <div class="ft-stat__label">Words</div>
+            </div>
+            <div>
+                <div class="ft-stat__number" data-count="{{ stats.phrases }}">0</div>
+                <div class="ft-stat__label">Phrases</div>
+            </div>
+            <div>
+                <div class="ft-stat__number" data-count="{{ stats.idioms }}">0</div>
+                <div class="ft-stat__label">Idioms</div>
+            </div>
+            <div>
+                <div class="ft-stat__number" data-count="{{ stats.blog_posts }}">0</div>
+                <div class="ft-stat__label">Blog Posts</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main class="ft-container" style="padding-top: 48px; padding-bottom: 48px;">
+
+    <!-- Feature Cards -->
+    <section>
+        <h2 style="font-family: var(--ft-font-headline); font-size: 2rem; margin-bottom: var(--ft-space-8); text-align: center; color: var(--ft-color-slate);; padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-6);">
+            Explore Our Resources
+        </h2>
+
+        <div class="ft-grid ft-grid--3" style="padding: var(--ft-space-6); gap: var(--ft-space-4xl);" style="gap: var(--ft-space-3xl);">
+            <!-- Dictionary Card -->
+            <div class="ft-feature-card">
+                <div class="ft-feature-card__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <h3 style="font-family: var(--ft-font-headline); font-size: 1.5rem; margin-bottom: 12px;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Dictionary</h3>
+                <p style="color: var(--ft-text-secondary); line-height: 1.6;">
+                    Comprehensive collection of Punjabi words with definitions in multiple scripts.
+                </p>
+                <a href="/dictionary/" style="display: inline-block; margin-top: var(--ft-space-4); color: var(--ft-color-teal); font-weight: 700;">
+                    Explore →
+                </a>
+            </div>
+
+            <!-- Phrases Card -->
+            <div class="ft-feature-card">
+                <div class="ft-feature-card__icon" style="background: var(--ft-color-oxford);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                </div>
+                <h3 style="font-family: var(--ft-font-headline); font-size: 1.5rem; margin-bottom: 12px;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Common Phrases</h3>
+                <p style="color: var(--ft-text-secondary); line-height: 1.6;">
+                    Essential phrases for everyday conversation with pronunciation guides.
+                </p>
+                <a href="/phrases/" style="display: inline-block; margin-top: var(--ft-space-4); color: var(--ft-color-oxford); font-weight: 700;">
+                    Browse →
+                </a>
+            </div>
+
+            <!-- Idioms Card -->
+            <div class="ft-feature-card">
+                <div class="ft-feature-card__icon" style="background: var(--ft-color-claret);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                </div>
+                <h3 style="font-family: var(--ft-font-headline); font-size: 1.5rem; margin-bottom: 12px;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Idioms (ਅਖਾਣ)</h3>
+                <p style="color: var(--ft-text-secondary); line-height: 1.6;">
+                    Wisdom and wit of Punjabi culture through its rich idioms and proverbs.
+                </p>
+                <a href="/idioms/" style="display: inline-block; margin-top: var(--ft-space-4); color: var(--ft-color-claret); font-weight: 700;">
+                    Discover →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Content -->
+    <section style="margin-top: 64px;">
+        <div style="border-top: 3px solid var(--ft-color-slate); border-bottom: 1px solid rgba(13, 118, 128, 0.15); padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-8);">
+            <h2 style="font-family: var(--ft-font-headline); font-size: 2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;; padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-6);">Trending Now</h2>
+        </div>
+
+        <!-- Trending Words -->
+        {% if trending_words %}
+        <div style="margin-bottom: var(--ft-space-8);">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: var(--ft-space-4); color: var(--ft-color-teal);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Popular Words</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--ft-space-2);">
+                {% for word in trending_words %}
+                <a href="{{ word.url }}" class="ft-trending-tag gurmukhi">{{ word.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Trending Idioms -->
+        {% if trending_idioms %}
+        <div style="margin-bottom: var(--ft-space-8);">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: var(--ft-space-4); color: var(--ft-color-claret);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Popular Idioms</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--ft-space-2);">
+                {% for idiom in trending_idioms %}
+                <a href="{{ idiom.url }}" class="ft-trending-tag gurmukhi">{{ idiom.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Trending Phrases -->
+        {% if trending_phrases %}
+        <div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: var(--ft-space-4); color: var(--ft-color-oxford);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">Popular Phrases</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--ft-space-2);">
+                {% for phrase in trending_phrases %}
+                <a href="{{ phrase.url }}" class="ft-trending-tag gurmukhi">{{ phrase.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Latest Blog Posts -->
+    {% if latest_blog_posts %}
+    <section style="margin-top: 64px;">
+        <div style="border-top: 3px solid var(--ft-color-slate); border-bottom: 1px solid rgba(13, 118, 128, 0.15); padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-8);">
+            <h2 style="font-family: var(--ft-font-headline); font-size: 2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;; padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-6);">From Our Blog</h2>
+        </div>
+
+        <div class="ft-grid ft-grid--3" style="padding: var(--ft-space-6); gap: var(--ft-space-4xl);" style="gap: var(--ft-space-3xl);">
+            {% for post in latest_blog_posts %}
+            <article class="o-teaser" style="border: 2px solid rgba(13, 118, 128, 0.15); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-lg); background-color: var(--ft-bg-card);" style="padding: var(--ft-space-lg);">
+                {% if post.featured_image %}
+                <div class="o-teaser__image-container">
+                    {% image post.featured_image fill-600x400 as img %}
+                    <img src="{{ img.url }}" alt="{{ img.alt }}" class="o-teaser__image">
+                </div>
+                {% endif %}
+
+                <div>
+                    {% if post.tags.all %}
+                    <span class="o-teaser__tag">{{ post.tags.all.0.name }}</span>
+                    {% endif %}
+
+                    <h3 class="o-teaser__headline">
+                        <a href="{{ post.url }}">{{ post.title }}</a>
+                    </h3>
+
+                    <p class="o-teaser__standfirst">{{ post.intro|truncatewords:20 }}</p>
+
+                    <div class="o-teaser__meta">
+                        <time class="o-teaser__timestamp">{{ post.first_published_at|date:"F d, Y" }}</time>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin-top: var(--ft-space-8);">
+            <a href="/blog/" class="o-buttons o-buttons__secondary">View All Blog Posts</a>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Call to Action -->
+    <section style="margin-top: 64px; background: linear-gradient(135deg, rgba(13, 118, 128, 0.05) 0%, rgba(15, 84, 153, 0.05) 100%); border: 2px solid var(--ft-color-teal); padding: var(--ft-space-12); text-align: center;">
+        <h2 style="font-family: var(--ft-font-headline); font-size: 2.5rem; margin-bottom: var(--ft-space-4);; padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-6);">Join Our Community</h2>
+        <p style="font-size: 1.125rem; padding: var(--ft-space-3) 0; margin-bottom: var(--ft-space-5); color: var(--ft-text-secondary); line-height: 1.7; margin-bottom: var(--ft-space-4); max-width: 600px; margin: 0 auto 32px auto;">
+            Help us preserve and promote the Punjabi language. Contribute content, share feedback, or simply explore and learn.
+        </p>
+        <div style="display: flex; gap: var(--ft-space-4); justify-content: center; flex-wrap: wrap;">
+            <a href="#" class="o-buttons o-buttons__primary">Contribute Content</a>
+            <a href="#" class="o-buttons o-buttons__secondary">Contact Us</a>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Counter Animation
+document.addEventListener('DOMContentLoaded', function() {
+    const counters = document.querySelectorAll('.ft-stat__number');
+
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-count') || 0);
+        const duration = 2000;
+        const increment = target / (duration / 16);
+        let current = 0;
+
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                counter.textContent = target.toLocaleString();
+                clearInterval(timer);
+            } else {
+                counter.textContent = Math.floor(current).toLocaleString();
+            }
+        }, 16);
+    });
+});
+</script>
+{% endblock %}

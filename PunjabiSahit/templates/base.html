@@ -1,0 +1,123 @@
+
+{% load static wagtailuserbar %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Punjabi Sahit{% endblock title %}{% block title_suffix %}{% endblock title_suffix %}</title>
+
+    {# Global stylesheets #}
+    <link rel="stylesheet" href="{% static 'css/ft-origami.css' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Gurmukhi:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    {% block extra_css %}{# Add any page-specific CSS here #}{% endblock extra_css %}
+</head>
+
+<body class="{% block body_class %}{% endblock body_class %}">
+    {% wagtailuserbar %}
+
+    <!-- FT Masthead Header -->
+    <header class="ft-masthead">
+        <div class="ft-container">
+            <div class="ft-masthead__inner">
+                <a href="/home-page/" class="ft-masthead__logo gurmukhi">ਪੰਜਾਬੀ ਸਾਹਿਤ</a>
+
+                <nav class="ft-masthead__nav">
+                    <a href="/dictionary/" class="ft-masthead__nav-link">Dictionary</a>
+                    <a href="/phrases/" class="ft-masthead__nav-link">Phrases</a>
+                    <a href="/idioms/" class="ft-masthead__nav-link">Idioms</a>
+                    <a href="/blog/" class="ft-masthead__nav-link">Blog</a>
+                    <a href="/home-page/books/" class="ft-masthead__nav-link">Books</a>
+                    <a href="/home-page/authors/" class="ft-masthead__nav-link">Authors</a>
+                    <a href="/events/" class="ft-masthead__nav-link">Events</a>
+                </nav>
+
+                <div class="ft-masthead__search ft-hidden-mobile">
+                    <input type="search" placeholder="Search..." class="ft-masthead__search-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+
+                <button id="mobile-menu-button" class="ft-hidden-desktop o-buttons o-buttons__secondary" style="padding: 0.5em 1em;">
+                    ☰
+                </button>
+            </div>
+
+            <div id="mobile-menu" class="ft-hidden" style="display: none; padding-top: 16px;">
+                <nav style="display: flex; flex-direction: column; gap: 12px;">
+                    <a href="/dictionary/" class="ft-masthead__nav-link">Dictionary</a>
+                    <a href="/phrases/" class="ft-masthead__nav-link">Phrases</a>
+                    <a href="/idioms/" class="ft-masthead__nav-link">Idioms</a>
+                    <a href="/blog/" class="ft-masthead__nav-link">Blog</a>
+                    <a href="/home-page/books/" class="ft-masthead__nav-link">Books</a>
+                    <a href="/home-page/authors/" class="ft-masthead__nav-link">Authors</a>
+                    <a href="/events/" class="ft-masthead__nav-link">Events</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    {% block content %}{% endblock content %}
+
+    <!-- FT Footer -->
+    <footer class="ft-footer">
+        <div class="ft-container">
+            <div class="ft-footer__grid">
+                <div>
+                    <h4 class="ft-footer__heading">Resources</h4>
+                    <a href="/dictionary/" class="ft-footer__link">Dictionary</a>
+                    <a href="/phrases/" class="ft-footer__link">Phrases</a>
+                    <a href="/idioms/" class="ft-footer__link">Idioms</a>
+                </div>
+                <div>
+                    <h4 class="ft-footer__heading">Content</h4>
+                    <a href="/blog/" class="ft-footer__link">Blog</a>
+                    <a href="/home-page/books/" class="ft-footer__link">Books</a>
+                    <a href="/home-page/authors/" class="ft-footer__link">Authors</a>
+                    <a href="/events/" class="ft-footer__link">Events</a>
+                </div>
+                <div>
+                    <h4 class="ft-footer__heading">About</h4>
+                    <a href="#" class="ft-footer__link">About Us</a>
+                    <a href="#" class="ft-footer__link">Contact</a>
+                    <a href="#" class="ft-footer__link">Privacy Policy</a>
+                </div>
+                <div>
+                    <h4 class="ft-footer__heading">Follow Us</h4>
+                    <a href="#" class="ft-footer__link">Facebook</a>
+                    <a href="#" class="ft-footer__link">Twitter</a>
+                    <a href="#" class="ft-footer__link">Instagram</a>
+                </div>
+            </div>
+
+            <div class="ft-footer__legal">
+                &copy; 2025 Punjabi Sahit. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    {# Global javascript #}
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', () => {
+                if (mobileMenu) {
+                    if (mobileMenu.style.display === 'none') {
+                        mobileMenu.style.display = 'block';
+                    } else {
+                        mobileMenu.style.display = 'none';
+                    }
+                }
+            });
+        }
+    </script>
+    {% block extra_js %}{# Add any page-specific JS here #}{% endblock extra_js %}
+</body>
+</html>

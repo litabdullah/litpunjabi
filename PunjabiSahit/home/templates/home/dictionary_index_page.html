@@ -1,0 +1,570 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block title %}{{ page.title }} | Punjabi Sahit{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       DICTIONARY PAGE - FT ORIGAMI CUSTOMIZATIONS
+       ============================================ */
+
+    /* Alphabet Navigation - FT Style */
+    .ft-alphabet-nav {
+        position: sticky;
+        top: 60px;
+        z-index: 30;
+        background-color: var(--ft-bg-card);
+        padding: var(--ft-space-lg) 0;
+        border-bottom: 1px solid rgba(13, 118, 128, 0.15);
+        margin-bottom: var(--ft-space-2xl);
+    }
+
+    .ft-alphabet-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.5rem;
+        height: 2.5rem;
+        padding: 0 var(--ft-space-sm);
+        font-family: var(--ft-font-gurmukhi);
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--ft-color-slate);
+        background-color: var(--ft-bg-card);
+        border: 1px solid var(--ft-color-grey-2);
+        text-decoration: none;
+        transition: var(--ft-transition-base);
+    }
+
+    .ft-alphabet-pill:hover {
+        background-color: var(--ft-color-teal);
+        color: var(--ft-text-inverse);
+        border-color: var(--ft-color-teal);
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    .ft-alphabet-pill.active {
+        background-color: var(--ft-color-slate);
+        color: var(--ft-color-paper);
+        border-color: var(--ft-color-slate);
+    }
+
+    /* Filter Sidebar - FT Style */
+    .ft-filter-sidebar {
+        position: sticky;
+        top: 140px;
+        max-height: calc(100vh - 160px);
+        overflow-y: auto;
+        background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md);
+        padding: var(--ft-space-3xl);
+    }
+
+    .ft-filter-group {
+        margin-bottom: var(--ft-space-xl);
+        padding-bottom: var(--ft-space-xl);
+        border-bottom: 1px solid rgba(13, 118, 128, 0.15);
+    }
+
+    .ft-filter-group:last-child {
+        border-bottom: none;
+    }
+
+    .ft-filter-label {
+        display: flex;
+        align-items: center;
+        padding: var(--ft-space-sm) 0;
+        cursor: pointer;
+        font-size: 0.9375rem;
+        color: var(--ft-color-slate);
+        transition: var(--ft-transition-base);
+    }
+
+    .ft-filter-label:hover {
+        color: var(--ft-color-teal);
+    }
+
+    .ft-filter-label input {
+        margin-right: var(--ft-space-md);
+        width: 1.125rem;
+        height: 1.125rem;
+        cursor: pointer;
+        accent-color: var(--ft-color-teal);
+    }
+
+    /* Dictionary Entry Card - FT Style */
+    .ft-dictionary-entry {
+        display: block; padding: var(--ft-space-3xl) var(--ft-space-4xl);
+        background-color: var(--ft-bg-card);
+        border-bottom: 1px solid rgba(13, 118, 128, 0.15);
+        text-decoration: none;
+        transition: var(--ft-transition-base);
+        border-left: 4px solid transparent;
+    }
+
+    .ft-dictionary-entry:hover {
+        background-color: #fafaf9;
+        border-left-color: var(--ft-color-teal);
+        text-decoration: none;
+    }
+
+    .ft-dictionary-entry__headword { font-family: var(--ft-font-gurmukhi); font-size: 2rem; font-weight: 700; color: var(--ft-color-slate); margin-bottom: var(--ft-space-lg); padding-bottom: var(--ft-space-md);
+        line-height: 1.2;
+    }
+
+    .ft-dictionary-entry__roman { font-family: var(--ft-font-body); font-size: 1rem; font-weight: 500; color: var(--ft-text-tertiary); margin-bottom: var(--ft-space-lg); padding: var(--ft-space-sm) 0;
+    }
+
+    .ft-dictionary-entry__definition { font-size: 0.9375rem; line-height: 1.7; color: var(--ft-text-secondary); margin-bottom: var(--ft-space-xl); padding: var(--ft-space-md) 0;
+    }
+
+    .ft-dictionary-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-radius: var(--ft-radius-md);
+        margin-right: var(--ft-space-xs);
+        margin-bottom: var(--ft-space-xs);
+    }
+
+    .ft-dictionary-badge--pos {
+        background-color: var(--ft-color-oxford);
+        color: var(--ft-text-inverse);
+    }
+
+    .ft-dictionary-badge--synonym {
+        background-color: var(--ft-color-teal);
+        color: var(--ft-text-inverse);
+    }
+
+    .ft-dictionary-badge--antonym {
+        background-color: var(--ft-color-claret);
+        color: var(--ft-text-inverse);
+    }
+
+    .ft-dictionary-badge--example {
+        background-color: var(--ft-text-tertiary);
+        color: var(--ft-text-inverse);
+    }
+
+    /* Audio Button - FT Style */
+    .ft-audio-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        background-color: transparent;
+        border: 1px solid var(--ft-color-teal);
+        color: var(--ft-color-teal);
+        cursor: pointer;
+        transition: var(--ft-transition-base);
+    }
+
+    .ft-audio-btn:hover {
+        background-color: var(--ft-color-teal);
+        color: var(--ft-text-inverse);
+    }
+
+    /* Mobile Filter Toggle - FT Style */
+    .ft-mobile-filter-btn {
+        position: fixed;
+        bottom: var(--ft-space-2xl);
+        right: var(--ft-space-2xl);
+        width: 3.5rem;
+        height: 3.5rem;
+        background-color: var(--ft-color-teal);
+        color: var(--ft-text-inverse);
+        border: none;
+        border-radius: 50%;
+        box-shadow: var(--ft-shadow-lg);
+        cursor: pointer;
+        z-index: 40;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--ft-transition-base);
+    }
+
+    .ft-mobile-filter-btn:hover {
+        background-color: #0a5a63;
+        transform: scale(1.1);
+    }
+
+    /* Mobile Filter Drawer */
+    @media (max-width: 1023px) {
+        .ft-mobile-filter-btn {
+            display: flex;
+        }
+
+        .ft-filter-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            max-width: 360px;
+            height: 100vh;
+            max-height: 100vh;
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: var(--ft-shadow-lg);
+            overflow-y: auto;
+        }
+
+        .ft-filter-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .ft-filter-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 45;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .ft-filter-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .ft-mobile-filter-btn {
+            display: none;
+        }
+    }
+
+    /* Results Count - FT Style */
+    .ft-results-count {
+        font-family: var(--ft-font-body);
+        font-size: 0.9375rem;
+        color: var(--ft-color-slate);
+    }
+
+    .ft-results-count__number {
+        font-family: var(--ft-font-headline);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--ft-color-teal);
+        margin-right: var(--ft-space-xs);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="ft-container ft-py-lg" style="padding: var(--ft-space-6xl);">
+    <!-- FT Section Header -->
+    <section style="border: 3px solid var(--ft-color-slate); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-lg); background-color: var(--ft-bg-card); padding: var(--ft-space-6) var(--ft-space-4); margin-bottom: var(--ft-space-12);">
+        <h1 style="font-family: var(--ft-font-headline); font-size: 2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ft-color-slate); padding: var(--ft-space-4) 0;; padding: var(--ft-space-6); border-bottom: 3px solid rgba(13, 118, 128, 0.2); margin-bottom: var(--ft-space-6);">{{ page.title }}</h1>
+        {% if page.intro %}
+        <div style="max-width: 700px; padding: var(--ft-space-6); border-left: 5px solid var(--ft-color-teal); background-color: rgba(255, 255, 255, 0.7); border-radius: var(--ft-radius-md); box-shadow: var(--ft-shadow-sm); margin-top: var(--ft-space-6); margin-bottom: var(--ft-space-8);">
+            <div style="font-size: 1rem; line-height: 1.8; color: var(--ft-text-secondary); padding: var(--ft-space-4);">{{ page.intro|richtext }}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Results Count & Clear Filters -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: var(--ft-space-6); gap: var(--ft-space-4);">
+        <div class="ft-results-count" style="padding: var(--ft-space-4); background-color: rgba(13, 118, 128, 0.05); border-radius: var(--ft-radius-md);">
+            <span class="ft-results-count__number">{{ dictionary_entries.paginator.count }}</span>
+            <span>word{% if dictionary_entries.paginator.count != 1 %}s{% endif %} found</span>
+        </div>
+        {% if request.GET.urlencode %}
+        <a href="?" class="o-buttons o-buttons__secondary" style="font-size: 0.875rem; padding: 0.5em 1em;">
+            Clear All Filters
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Alphabet Navigation (Sticky) -->
+    <div class="ft-alphabet-nav" style="border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); padding: var(--ft-space-5); box-shadow: var(--ft-shadow-md);">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: var(--ft-space-2);">
+            {% for letter in "ੳਅੲਸਹਕਖਗਘਙਚਛਜਝਞਟਠਡਢਣਤਥਦਧਨਪਫਬਭਮਯਰਲਵੜ" %}
+            <a href="?letter={{ letter }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.pos %}&pos={{ request.GET.pos }}{% endif %}{% if request.GET.origin %}&origin={{ request.GET.origin }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.has_synonyms %}&has_synonyms={{ request.GET.has_synonyms }}{% endif %}{% if request.GET.has_antonyms %}&has_antonyms={{ request.GET.has_antonyms }}{% endif %}{% if request.GET.has_examples %}&has_examples={{ request.GET.has_examples }}{% endif %}{% if request.GET.has_audio %}&has_audio={{ request.GET.has_audio }}{% endif %}"
+               class="ft-alphabet-pill {% if current_letter == letter %}active{% endif %}">
+                {{ letter }}
+            </a>
+            {% endfor %}
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.pos %}pos={{ request.GET.pos }}&{% endif %}{% if request.GET.origin %}origin={{ request.GET.origin }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}{% if request.GET.has_synonyms %}has_synonyms={{ request.GET.has_synonyms }}&{% endif %}{% if request.GET.has_antonyms %}has_antonyms={{ request.GET.has_antonyms }}&{% endif %}{% if request.GET.has_examples %}has_examples={{ request.GET.has_examples }}&{% endif %}{% if request.GET.has_audio %}has_audio={{ request.GET.has_audio }}{% endif %}"
+               class="ft-alphabet-pill {% if not current_letter %}active{% endif %}"
+               title="Show All">All</a>
+        </div>
+    </div>
+
+    <!-- Main Layout: Sidebar + Content -->
+    <div class="ft-grid ft-grid--4-2" style="padding: var(--ft-space-6); gap: var(--ft-space-4xl);">
+
+        <!-- Dictionary Entries (Left - Main Content) -->
+        <div>
+            <div style="background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); overflow: hidden; padding: var(--ft-space-4);">
+                {% for entry in dictionary_entries %}
+                <a href="{{ entry.url }}" class="ft-dictionary-entry" style="border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-lg); margin-bottom: var(--ft-space-4);">
+                    <div style="display: flex; align-items: start; justify-content: space-between; gap: var(--ft-space-4);">
+                        <div style="flex: 1; min-width: 0; padding: var(--ft-space-4);">
+                            <div style="display: flex; align-items: center; gap: var(--ft-space-3); margin-bottom: 8px;">
+                                <h2 class="ft-dictionary-entry__headword" style="padding: var(--ft-space-2) 0;">{{ entry.headword_gurmukhi }}</h2>
+                                {% if entry.sound %}
+                                <button class="ft-audio-btn" onclick="event.preventDefault(); /* Play audio */" title="Play pronunciation" aria-label="Play pronunciation">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                    </svg>
+                                </button>
+                                {% endif %}
+                            </div>
+                            <p class="ft-dictionary-entry__roman">{{ entry.headword_roman_simple }}</p>
+                            <p class="ft-dictionary-entry__definition">{{ entry.enriched_definition_english|striptags|truncatewords:25 }}</p>
+
+                            <!-- Badges -->
+                            <div style="margin-top: 12px;">
+                                {% if entry.parts_of_speech %}
+                                <span class="ft-dictionary-badge ft-dictionary-badge--pos">{{ entry.parts_of_speech }}</span>
+                                {% endif %}
+                                {% if entry.synonyms_gurmukhi %}
+                                <span class="ft-dictionary-badge ft-dictionary-badge--synonym">Synonyms</span>
+                                {% endif %}
+                                {% if entry.antonyms_gurmukhi %}
+                                <span class="ft-dictionary-badge ft-dictionary-badge--antonym">Antonyms</span>
+                                {% endif %}
+                                {% if entry.example_sentences_gurmukhi %}
+                                <span class="ft-dictionary-badge ft-dictionary-badge--example">Examples</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-grey-2); transition: var(--ft-transition-base); flex-shrink: 0;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </a>
+                {% empty %}
+                <div style="padding: var(--ft-space-6xl) var(--ft-space-4xl); text-align: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-grey-2); margin: 0 auto 24px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 style="font-family: var(--ft-font-headline); font-size: 1.25rem; margin-bottom: var(--ft-space-4); padding-bottom: var(--ft-space-2); color: var(--ft-color-slate);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">No dictionary entries found</h3>
+                    <p style="color: var(--ft-text-tertiary); margin-bottom: var(--ft-space-6); padding: var(--ft-space-2) var(--ft-space-4);">Try adjusting your filters or search terms</p>
+                    {% if request.GET.urlencode %}
+                    <a href="?" class="o-buttons o-buttons__primary">Clear All Filters</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination Controls -->
+            {% if dictionary_entries.paginator.num_pages > 1 %}
+            <div style="margin-top: var(--ft-space-8); padding: var(--ft-space-6); display: flex; justify-content: center; background-color: rgba(255, 255, 255, 0.3); border-radius: var(--ft-radius-lg); align-items: center; gap: var(--ft-space-3); flex-wrap: wrap;">
+                {% if dictionary_entries.has_previous %}
+                <a href="?page={{ dictionary_entries.previous_page_number }}{% if request.GET.letter %}&letter={{ request.GET.letter }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.pos %}&pos={{ request.GET.pos }}{% endif %}{% if request.GET.origin %}&origin={{ request.GET.origin }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.has_synonyms %}&has_synonyms={{ request.GET.has_synonyms }}{% endif %}{% if request.GET.has_antonyms %}&has_antonyms={{ request.GET.has_antonyms }}{% endif %}{% if request.GET.has_examples %}&has_examples={{ request.GET.has_examples }}{% endif %}{% if request.GET.has_audio %}&has_audio={{ request.GET.has_audio }}{% endif %}"
+                   class="o-buttons o-buttons__secondary">
+                    ← Previous
+                </a>
+                {% endif %}
+
+                <span style="padding: 0.75em 1.5em; font-family: var(--ft-font-body); font-weight: 600; color: var(--ft-color-slate);">
+                    Page {{ dictionary_entries.number }} of {{ dictionary_entries.paginator.num_pages }}
+                </span>
+
+                {% if dictionary_entries.has_next %}
+                <a href="?page={{ dictionary_entries.next_page_number }}{% if request.GET.letter %}&letter={{ request.GET.letter }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.pos %}&pos={{ request.GET.pos }}{% endif %}{% if request.GET.origin %}&origin={{ request.GET.origin }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.has_synonyms %}&has_synonyms={{ request.GET.has_synonyms }}{% endif %}{% if request.GET.has_antonyms %}&has_antonyms={{ request.GET.has_antonyms }}{% endif %}{% if request.GET.has_examples %}&has_examples={{ request.GET.has_examples }}{% endif %}{% if request.GET.has_audio %}&has_audio={{ request.GET.has_audio }}{% endif %}"
+                   class="o-buttons o-buttons__secondary">
+                    Next →
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Filter Sidebar (Right) -->
+        <aside id="filterSidebar" class="ft-filter-sidebar">
+            <!-- Close Button (Mobile) -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--ft-space-6);">
+                <h2 style="font-family: var(--ft-font-headline); font-size: 1.25rem; font-weight: 700; color: var(--ft-color-slate); margin: 0;; padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-6);">Filters & Sort</h2>
+                <button id="closeFilterBtn" class="o-buttons o-buttons__secondary" style="padding: 0.5em; display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form method="get" action="" id="filterForm">
+
+                <!-- Search Box -->
+                <div class="ft-filter-group" style="padding: var(--ft-space-5); border-radius: var(--ft-radius-md); background-color: rgba(255, 255, 255, 0.5);">
+                    <label class="o-forms-label">Search</label>
+                    <input type="text"
+                           name="q"
+                           value="{{ search_query|default:'' }}"
+                           placeholder="Search words..."
+                           class="o-forms-input__text"
+                           onchange="document.getElementById('filterForm').submit()">
+                </div>
+
+                <!-- Sort By -->
+                <div class="ft-filter-group" style="padding: var(--ft-space-5); border-radius: var(--ft-radius-md); background-color: rgba(255, 255, 255, 0.5);">
+                    <label class="o-forms-label">Sort By</label>
+                    <select name="sort"
+                            class="o-forms-input__text"
+                            onchange="document.getElementById('filterForm').submit()">
+                        <option value="alpha_asc" {% if current_sort == 'alpha_asc' %}selected{% endif %}>A → Z</option>
+                        <option value="alpha_desc" {% if current_sort == 'alpha_desc' %}selected{% endif %}>Z → A</option>
+                        <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Most Viewed</option>
+                        <option value="recent" {% if current_sort == 'recent' %}selected{% endif %}>Recently Added</option>
+                    </select>
+                </div>
+
+                <!-- Part of Speech Filter -->
+                <div class="ft-filter-group" style="padding: var(--ft-space-5); border-radius: var(--ft-radius-md); background-color: rgba(255, 255, 255, 0.5);">
+                    <label class="o-forms-label">Part of Speech</label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="pos" value="" {% if not request.GET.pos %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>All Types</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="pos" value="noun" {% if request.GET.pos == 'noun' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Noun</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="pos" value="verb" {% if request.GET.pos == 'verb' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Verb</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="pos" value="adjective" {% if request.GET.pos == 'adjective' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Adjective</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="pos" value="adverb" {% if request.GET.pos == 'adverb' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Adverb</span>
+                    </label>
+                </div>
+
+                <!-- Origin Filter -->
+                <div class="ft-filter-group" style="padding: var(--ft-space-5); border-radius: var(--ft-radius-md); background-color: rgba(255, 255, 255, 0.5);">
+                    <label class="o-forms-label">Word Origin</label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="origin" value="" {% if not request.GET.origin %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>All Origins</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="origin" value="punjabi" {% if request.GET.origin == 'punjabi' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Punjabi</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="origin" value="arabic" {% if request.GET.origin == 'arabic' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Arabic</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="origin" value="persian" {% if request.GET.origin == 'persian' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Persian</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="origin" value="sanskrit" {% if request.GET.origin == 'sanskrit' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Sanskrit</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="origin" value="urdu" {% if request.GET.origin == 'urdu' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Urdu</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="origin" value="hindi" {% if request.GET.origin == 'hindi' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Hindi</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="origin" value="english" {% if request.GET.origin == 'english' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>English</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="radio" name="origin" value="other" {% if request.GET.origin == 'other' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Other</span>
+                    </label>
+                </div>
+
+                <!-- Has Content Filter -->
+                <div class="ft-filter-group" style="border-bottom: none;">
+                    <label class="o-forms-label">Has Content</label>
+                    <label class="ft-filter-label">
+                        <input type="checkbox" name="has_synonyms" value="true" {% if request.GET.has_synonyms == 'true' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Has Synonyms</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="checkbox" name="has_antonyms" value="true" {% if request.GET.has_antonyms == 'true' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Has Antonyms</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="checkbox" name="has_examples" value="true" {% if request.GET.has_examples == 'true' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Has Examples</span>
+                    </label>
+                    <label class="ft-filter-label">
+                        <input type="checkbox" name="has_audio" value="true" {% if request.GET.has_audio == 'true' %}checked{% endif %} onchange="document.getElementById('filterForm').submit()">
+                        <span>Has Audio</span>
+                    </label>
+                </div>
+
+                <!-- Hidden field to preserve letter filter -->
+                {% if current_letter %}
+                <input type="hidden" name="letter" value="{{ current_letter }}">
+                {% endif %}
+
+            </form>
+        </aside>
+
+    </div>
+</main>
+
+<!-- Mobile Filter Button -->
+<button id="mobileFilterBtn" class="ft-mobile-filter-btn" aria-label="Open filters">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+    </svg>
+</button>
+
+<!-- Filter Overlay (Mobile) -->
+<div id="filterOverlay" class="ft-filter-overlay"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Mobile filter toggle functionality
+    const mobileFilterBtn = document.getElementById('mobileFilterBtn');
+    const closeFilterBtn = document.getElementById('closeFilterBtn');
+    const filterSidebar = document.getElementById('filterSidebar');
+    const filterOverlay = document.getElementById('filterOverlay');
+
+    function openFilters() {
+        if (filterSidebar && filterOverlay) {
+            filterSidebar.classList.add('open');
+            filterOverlay.classList.add('open');
+            if (closeFilterBtn) closeFilterBtn.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeFilters() {
+        if (filterSidebar && filterOverlay) {
+            filterSidebar.classList.remove('open');
+            filterOverlay.classList.remove('open');
+            if (closeFilterBtn) closeFilterBtn.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    }
+
+    if (mobileFilterBtn) {
+        mobileFilterBtn.addEventListener('click', openFilters);
+    }
+
+    if (closeFilterBtn) {
+        closeFilterBtn.addEventListener('click', closeFilters);
+    }
+
+    if (filterOverlay) {
+        filterOverlay.addEventListener('click', closeFilters);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }} | Punjabi Sahit Blog{% endblock %}
+
+{% block content %}
+<main style="background-color: var(--ft-bg-card);">
+
+    <!-- Blog Post Header -->
+    <div style="background-color: var(--ft-bg-card); border-bottom: 1px solid rgba(13, 118, 128, 0.15); padding: var(--ft-space-3xl) 0;">
+        <div class="ft-container">
+            <article style="max-width: 900px; margin: 0 auto; text-align: center;">
+
+                <!-- Tags -->
+                {% if page.tags.all %}
+                <div style="margin-bottom: var(--ft-space-md);">
+                    <span style="display: inline-block; padding: 6px 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background-color: var(--ft-color-oxford); color: var(--ft-text-inverse); border-radius: var(--ft-radius-md);">
+                        {{ page.tags.all.0.name }}
+                    </span>
+                </div>
+                {% endif %}
+
+                <!-- Title -->
+                <h1 style="font-family: var(--ft-font-headline); font-size: 3rem; font-weight: 700; color: var(--ft-color-slate); line-height: 1.2; margin-bottom: var(--ft-space-8); padding-bottom: var(--ft-space-4);; padding: var(--ft-space-6); border-bottom: 3px solid rgba(13, 118, 128, 0.2); margin-bottom: var(--ft-space-6);">{{ page.title }}</h1>
+
+                <!-- Intro -->
+                {% if page.intro %}
+                <p style="font-size: 1.25rem; padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-6); color: var(--ft-text-tertiary); line-height: 1.8; margin-bottom: var(--ft-space-6); margin-bottom: var(--ft-space-xl);">{{ page.intro }}</p>
+                {% endif %}
+
+                <!-- Author & Date -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: var(--ft-space-3);">
+                    {% with author=page.authors.first %}
+                        {% if author and author.author_image %}
+                            {% image author.author_image fill-48x48 as author_img %}
+                            <img src="{{ author_img.url }}" alt="{{ author.name }}" style="width: 48px; height: 48px; border-radius: 50%; box-shadow: var(--ft-shadow-md);">
+                        {% endif %}
+                        <div style="text-align: left;">
+                            <p style="font-weight: 700; color: var(--ft-color-slate);">{{ author.name|default:"Punjabi Sahit" }}</p>
+                            <p style="font-size: 0.875rem; color: var(--ft-text-tertiary); line-height: 1.6; margin-bottom: var(--ft-space-3);">{{ page.first_published_at|date:"F d, Y" }}</p>
+                        </div>
+                    {% endwith %}
+                </div>
+
+            </article>
+        </div>
+    </div>
+
+    <!-- Blog Post Content -->
+    <div class="ft-container" style="padding-top: var(--ft-space-2xl); padding-bottom: var(--ft-space-2xl);">
+        <article style="max-width: 900px; margin: 0 auto;">
+
+            <!-- Featured Image -->
+            {% if page.featured_image %}
+            <figure style="margin-bottom: var(--ft-space-2xl); box-shadow: var(--ft-shadow-lg); border-radius: var(--ft-radius-md); overflow: hidden;">
+                {% image page.featured_image width-1200 as img %}
+                <img src="{{ img.url }}" alt="{{ img.alt }}" style="width: 100%; display: block;">
+            </figure>
+            {% endif %}
+
+            <!-- Article Body (StreamField) -->
+            <div style="font-size: 1.0625rem; line-height: 1.8; color: var(--ft-color-slate); padding: var(--ft-space-6); border-left: 4px solid rgba(13, 118, 128, 0.2); background-color: rgba(255, 255, 255, 0.5); margin-bottom: var(--ft-space-2xl);">
+                {% for block in page.body %}
+                    <div style="margin-bottom: var(--ft-space-xl);">
+                        {% include_block block %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Author Bio Section -->
+            {% with author=page.authors.first %}
+            {% if author %}
+            <div style="margin-top: var(--ft-space-3xl); padding: var(--ft-space-3xl); border: 2px solid rgba(13, 118, 128, 0.15); border-radius: var(--ft-radius-lg); background-color: var(--ft-bg-card); box-shadow: var(--ft-shadow-md);">
+                <div style="display: flex; gap: var(--ft-space-lg); padding: var(--ft-space-2xl); background-color: var(--ft-bg-card); border-radius: var(--ft-radius-md);">
+                    {% if author.author_image %}
+                        {% image author.author_image fill-96x96 as author_img %}
+                        <img src="{{ author_img.url }}" alt="{{ author.name }}" style="width: 96px; height: 96px; border-radius: 50%; flex-shrink: 0; box-shadow: var(--ft-shadow-md);">
+                    {% endif %}
+                    <div>
+                        <p style="font-size: 0.875rem; font-weight: 600; color: var(--ft-text-tertiary); margin-bottom: 4px;">About the Author</p>
+                        <h3 style="font-family: var(--ft-font-headline); font-size: 1.25rem; font-weight: 700; color: var(--ft-color-slate); margin-bottom: 8px;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">{{ author.name }}</h3>
+                        <p style="color: var(--ft-text-tertiary); line-height: 1.6;">{{ author.bio }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <!-- Similar Posts Section -->
+            {% if similar_posts %}
+            <div style="margin-top: var(--ft-space-3xl); padding: var(--ft-space-3xl); border: 2px solid rgba(13, 118, 128, 0.15); border-radius: var(--ft-radius-lg); background-color: var(--ft-bg-card); box-shadow: var(--ft-shadow-md);">
+                <h2 style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 700; color: var(--ft-color-slate); margin-bottom: var(--ft-space-8); padding-bottom: var(--ft-space-3);; padding: var(--ft-space-4) 0; margin-bottom: var(--ft-space-6);">You May Also Like</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--ft-space-xl);">
+                    {% for post in similar_posts %}
+                    <a href="{{ post.url }}" style="display: block; background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.15); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md); overflow: hidden; text-decoration: none; transition: var(--ft-transition-base);" onmouseover="this.style.borderColor='var(--ft-color-teal)'; this.style.boxShadow='var(--ft-shadow-md)'" onmouseout="this.style.borderColor='var(--ft-color-grey-1)'; this.style.boxShadow='none'">
+                        {% if post.specific.featured_image %}
+                            {% image post.specific.featured_image fill-400x250 as img %}
+                            <img src="{{ img.url }}" alt="{{ img.alt }}" style="width: 100%; height: 160px; object-fit: cover; display: block;">
+                        {% elif post.specific.feature_image_url %}
+                            <img src="{{ post.specific.feature_image_url }}" alt="{{ post.specific.feature_image_alt }}" style="width: 100%; height: 160px; object-fit: cover; display: block;">
+                        {% else %}
+                            <div style="width: 100%; height: 160px; background: linear-gradient(135deg, var(--ft-color-paper), #e0f2e9);"></div>
+                        {% endif %}
+                        <div style="padding: var(--ft-space-lg);">
+                            {% if post.specific.tags.all %}
+                            <p style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--ft-color-teal); margin-bottom: 8px;">{{ post.specific.tags.all.0.name }}</p>
+                            {% endif %}
+                            <h3 style="font-weight: 700; color: var(--ft-color-slate); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">{{ post.title }}</h3>
+                            <p style="font-size: 0.875rem; color: var(--ft-text-tertiary); line-height: 1.6; margin-bottom: var(--ft-space-3); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ post.specific.intro }}</p>
+                            <div style="display: flex; align-items: center; gap: var(--ft-space-2); font-size: 0.75rem; color: var(--ft-text-tertiary);">
+                                <span>{{ post.first_published_at|date:"M d, Y" }}</span>
+                                {% if post.specific.reading_time %}
+                                <span>•</span>
+                                <span>{{ post.specific.reading_time }} min read</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Keep Reading Section (Prev/Next Posts) -->
+            <nav style="margin-top: var(--ft-space-3xl); padding-top: var(--ft-space-2xl); border-top: 2px solid rgba(13, 118, 128, 0.15); display: grid; grid-template-columns: 1fr 1fr; gap: var(--ft-space-2xl);">
+
+                <!-- Previous Post -->
+                <div>
+                    {% if prev_post %}
+                    <a href="{{ prev_post.url }}" style="display: block; text-decoration: none; height: 100%;">
+                        <p style="font-size: 0.875rem; font-weight: 600; color: var(--ft-text-tertiary); margin-bottom: 8px;">Older Post</p>
+                        <h4 style="font-family: var(--ft-font-headline); font-size: 1.125rem; font-weight: 700; color: var(--ft-color-slate); margin-bottom: 4px; transition: var(--ft-transition-base);" onmouseover="this.style.color='var(--ft-color-teal)'" onmouseout="this.style.color='var(--ft-color-slate)'">{{ prev_post.title }}</h4>
+                        <p style="font-size: 0.875rem; color: var(--ft-text-tertiary); line-height: 1.6; margin-bottom: var(--ft-space-3);">{{ prev_post.specific.intro|truncatewords:15 }}</p>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Next Post -->
+                <div style="text-align: right;">
+                    {% if next_post %}
+                    <a href="{{ next_post.url }}" style="display: block; text-decoration: none; height: 100%;">
+                        <p style="font-size: 0.875rem; font-weight: 600; color: var(--ft-text-tertiary); margin-bottom: 8px;">Newer Post</p>
+                        <h4 style="font-family: var(--ft-font-headline); font-size: 1.125rem; font-weight: 700; color: var(--ft-color-slate); margin-bottom: 4px; transition: var(--ft-transition-base);" onmouseover="this.style.color='var(--ft-color-teal)'" onmouseout="this.style.color='var(--ft-color-slate)'">{{ next_post.title }}</h4>
+                        <p style="font-size: 0.875rem; color: var(--ft-text-tertiary); line-height: 1.6; margin-bottom: var(--ft-space-3);">{{ next_post.specific.intro|truncatewords:15 }}</p>
+                    </a>
+                    {% endif %}
+                </div>
+
+            </nav>
+
+        </article>
+    </div>
+
+</main>
+{% endblock %}

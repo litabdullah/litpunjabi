@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }} | Punjabi Sahit{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       BOOKS PAGE - FT ORIGAMI CUSTOMIZATIONS
+       ============================================ */
+
+    /* Filter Bar - FT Style */
+    .ft-filter-bar {
+        position: sticky;
+        top: 60px;
+        z-index: 30;
+        background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md);
+        padding: var(--ft-space-3xl);
+        margin-bottom: var(--ft-space-2xl);
+    }
+
+    /* Book Card - FT Style */
+    .ft-book-card {
+        display: block;
+        background-color: var(--ft-bg-card); border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-lg); box-shadow: var(--ft-shadow-md);
+        overflow: hidden;
+        text-decoration: none;
+        transition: var(--ft-transition-base);
+    }
+
+    .ft-book-card:hover {
+        box-shadow: var(--ft-shadow-md);
+        border-color: var(--ft-color-claret);
+        text-decoration: none;
+    }
+
+    .ft-book-cover {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #f2e5da, #fcd0b1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ft-book-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--ft-transition-base);
+    }
+
+    .ft-book-card:hover .ft-book-cover img {
+        transform: scale(1.05);
+    }
+
+    .ft-book-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        background-color: var(--ft-color-claret);
+        color: var(--ft-text-inverse);
+        border-radius: var(--ft-radius-md);
+    }
+
+    .ft-book-title-gurmukhi { font-family: var(--ft-font-gurmukhi); font-size: 1.125rem; font-weight: 700; color: var(--ft-color-slate); margin-bottom: var(--ft-space-md); padding: var(--ft-space-xs) 0;
+        line-height: 1.3;
+    }
+
+    .ft-book-title-english {
+        font-family: var(--ft-font-headline);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--ft-text-tertiary);
+    }
+
+    .ft-book-author {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--ft-color-claret);
+        margin-top: var(--ft-space-sm);
+        margin-bottom: var(--ft-space-sm);
+    }
+
+    .ft-book-meta {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.75rem;
+        color: var(--ft-text-tertiary);
+        margin-bottom: 4px;
+    }
+
+    .ft-book-meta svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    .ft-book-tag {
+        display: inline-block;
+        padding: 2px 6px;
+        font-size: 0.6875rem;
+        background-color: var(--ft-color-grey-1);
+        color: var(--ft-color-slate);
+        border-radius: var(--ft-radius-md);
+        margin-right: 4px;
+        margin-bottom: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="ft-container ft-py-lg" style="padding: var(--ft-space-6xl);">
+    <!-- FT Section Header -->
+    <section style="border: 3px solid var(--ft-color-slate); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-lg); background-color: var(--ft-bg-card); padding: var(--ft-space-6) var(--ft-space-4); margin-bottom: var(--ft-space-12);">
+        <h1 style="font-family: var(--ft-font-headline); font-size: 2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ft-color-slate); padding: var(--ft-space-4) 0;; padding: var(--ft-space-6); border-bottom: 3px solid rgba(13, 118, 128, 0.2); margin-bottom: var(--ft-space-6);">{{ page.title }}</h1>
+        {% if page.intro %}
+        <div style="max-width: 700px; padding: var(--ft-space-6); border-left: 5px solid var(--ft-color-teal); background-color: rgba(255, 255, 255, 0.7); border-radius: var(--ft-radius-md); box-shadow: var(--ft-shadow-sm); margin-top: var(--ft-space-6); margin-bottom: var(--ft-space-8);">
+            <div style="font-size: 1rem; line-height: 1.8; color: var(--ft-text-secondary); padding: var(--ft-space-4);">{{ page.intro|richtext }}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Filter Bar (Sticky) -->
+    <div class="ft-filter-bar" style="border: 2px solid rgba(13, 118, 128, 0.25); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-xl); padding: var(--ft-space-5xl); margin-bottom: var(--ft-space-5xl);">
+        <form method="get" action="">
+            <!-- Row 1: Main Filters -->
+            <div style="display: flex; flex-wrap: wrap; gap: var(--ft-space-4); align-items: end; margin-bottom: var(--ft-space-4);">
+                <!-- Search Box -->
+                <div style="flex: 1; min-width: 220px;">
+                    <label class="o-forms-label">Search Books</label>
+                    <div style="position: relative;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ft-text-tertiary);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input type="text"
+                               name="q"
+                               value="{{ search_query|default:'' }}"
+                               placeholder="Search books..."
+                               class="o-forms-input__text"
+                               style="padding-left: 40px;"
+                               onchange="this.form.submit()">
+                    </div>
+                </div>
+
+                <!-- Author Filter -->
+                <div style="min-width: 180px;">
+                    <label class="o-forms-label">Author</label>
+                    <select name="author" class="o-forms-input__text" onchange="this.form.submit()">
+                        <option value="">All Authors</option>
+                        {% for author in all_authors %}
+                        <option value="{{ author.id }}" {% if request.GET.author == author.id|stringformat:"s" %}selected{% endif %}>
+                            {{ author.name_english|default:author.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Category Filter -->
+                <div style="min-width: 160px;">
+                    <label class="o-forms-label">Category</label>
+                    <input type="text"
+                           name="category"
+                           value="{{ request.GET.category|default:'' }}"
+                           placeholder="Category..."
+                           class="o-forms-input__text"
+                           onchange="this.form.submit()">
+                </div>
+
+                <!-- Sort Dropdown -->
+                <div style="min-width: 180px;">
+                    <label class="o-forms-label">Sort By</label>
+                    <select name="sort" class="o-forms-input__text" onchange="this.form.submit()">
+                        <option value="recent" {% if current_sort == 'recent' %}selected{% endif %}>Recently Added</option>
+                        <option value="title" {% if current_sort == 'title' %}selected{% endif %}>Title A → Z</option>
+                        <option value="author" {% if current_sort == 'author' %}selected{% endif %}>By Author</option>
+                        <option value="year" {% if current_sort == 'year' %}selected{% endif %}>Publication Year</option>
+                        <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Most Viewed</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 2: Additional Filters & Actions -->
+            <div style="display: flex; flex-wrap: wrap; gap: var(--ft-space-4); align-items: end; justify-content: space-between;">
+                <!-- Additional Filters -->
+                <div style="display: flex; flex-wrap: wrap; gap: var(--ft-space-3); align-items: end;">
+                    <div style="min-width: 140px;">
+                        <label class="o-forms-label" style="font-size: 0.8125rem;">Publisher</label>
+                        <input type="text"
+                               name="publisher"
+                               value="{{ request.GET.publisher|default:'' }}"
+                               placeholder="Publisher..."
+                               class="o-forms-input__text"
+                               style="font-size: 0.875rem; padding: 8px 12px;"
+                               onchange="this.form.submit()">
+                    </div>
+                    <div style="min-width: 100px;">
+                        <label class="o-forms-label" style="font-size: 0.8125rem;">Year</label>
+                        <input type="number"
+                               name="year"
+                               value="{{ request.GET.year|default:'' }}"
+                               placeholder="Year..."
+                               class="o-forms-input__text"
+                               style="font-size: 0.875rem; padding: 8px 12px;"
+                               onchange="this.form.submit()">
+                    </div>
+                    <div style="min-width: 120px;">
+                        <label class="o-forms-label" style="font-size: 0.8125rem;">Tag</label>
+                        <input type="text"
+                               name="tag"
+                               value="{{ request.GET.tag|default:'' }}"
+                               placeholder="Tag..."
+                               class="o-forms-input__text"
+                               style="font-size: 0.875rem; padding: 8px 12px;"
+                               onchange="this.form.submit()">
+                    </div>
+                </div>
+
+                <!-- Results Count & Clear -->
+                <div style="display: flex; align-items: center; gap: var(--ft-space-4);">
+                    <div style="padding-bottom: 10px;">
+                        <span style="font-family: var(--ft-font-headline); font-size: 1.5rem; font-weight: 700; color: var(--ft-color-claret); margin-right: 8px;">{{ books.paginator.count }}</span>
+                        <span style="font-family: var(--ft-font-body); font-weight: 500; color: var(--ft-color-slate);">book{% if books.paginator.count != 1 %}s{% endif %}</span>
+                    </div>
+                    {% if request.GET.urlencode %}
+                    <div style="padding-bottom: 10px;">
+                        <a href="?" class="o-buttons o-buttons__secondary" style="font-size: 0.875rem; padding: 0.5em 1em;">
+                            Clear Filters
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Books Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--ft-space-3xl);">
+        {% for book in books %}
+        <a href="{{ book.url }}" class="ft-book-card" style="border: 2px solid rgba(13, 118, 128, 0.2); border-radius: var(--ft-radius-xl); box-shadow: var(--ft-shadow-lg);">
+            <!-- Book Cover -->
+            <div class="ft-book-cover" style="position: relative; overflow: hidden;">
+                {% if book.cover_image %}
+                    {% image book.cover_image fill-300x400 as cover %}
+                    <img src="{{ cover.url }}" alt="{{ book.title_english|default:book.title_gurmukhi }}">
+                {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-claret); opacity: 0.3;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                {% endif %}
+
+                <!-- Category Badge -->
+                {% if book.category %}
+                <div style="position: absolute; top: 8px; left: 8px;">
+                    <span class="ft-book-badge">{{ book.category }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Book Info -->
+            <div style="padding: var(--ft-space-3xl);">
+                <!-- Title -->
+                <div style="margin-bottom: var(--ft-space-6); padding: var(--ft-space-4) 0;">
+                    {% if book.title_gurmukhi %}
+                    <h2 class="ft-book-title-gurmukhi" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        {{ book.title_gurmukhi }}
+                    </h2>
+                    {% endif %}
+                    <h3 class="ft-book-title-english" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        {{ book.title_english }}
+                    </h3>
+                </div>
+
+                <!-- Author -->
+                {% if book.author %}
+                <p class="ft-book-author">
+                    {{ book.author.name_english|default:book.author.name }}
+                </p>
+                {% endif %}
+
+                <!-- Metadata -->
+                <div style="margin-bottom: var(--ft-space-6); padding: var(--ft-space-4) 0;">
+                    {% if book.publisher %}
+                    <div class="ft-book-meta" style="padding: var(--ft-space-3) 0; margin: var(--ft-space-2) 0;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        <span>{{ book.publisher }}</span>
+                    </div>
+                    {% endif %}
+                    {% if book.publication_year %}
+                    <div class="ft-book-meta" style="padding: var(--ft-space-3) 0; margin: var(--ft-space-2) 0;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ book.publication_year }}</span>
+                    </div>
+                    {% endif %}
+                    {% if book.pages %}
+                    <div class="ft-book-meta" style="padding: var(--ft-space-3) 0; margin: var(--ft-space-2) 0;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ book.pages }} pages</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Tags -->
+                {% if book.tags.all %}
+                <div style="margin-bottom: var(--ft-space-6); padding: var(--ft-space-4) 0;">
+                    {% for tag in book.tags.all|slice:":3" %}
+                    <span class="ft-book-tag">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- View Count -->
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--ft-space-6); margin-top: var(--ft-space-6); border-top: 2px solid rgba(13, 118, 128, 0.15);">
+                    <div style="display: flex; align-items: center; gap: var(--ft-space-2); font-size: 0.75rem; color: var(--ft-text-tertiary); padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>{{ book.view_count }}</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-grey-2); transition: var(--ft-transition-base);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div style="grid-column: 1 / -1; border: 3px dashed rgba(13, 118, 128, 0.3); border-radius: var(--ft-radius-2xl); padding: var(--ft-space-6xl) var(--ft-space-4xl); text-align: center; background: var(--ft-bg-card); border: 1px solid rgba(13, 118, 128, 0.15);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--ft-color-grey-2); margin: 0 auto 24px;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <h3 style="font-family: var(--ft-font-headline); font-size: 1.25rem; margin-bottom: var(--ft-space-4); padding-bottom: var(--ft-space-2); color: var(--ft-color-slate);; padding: var(--ft-space-3) 0; margin-top: var(--ft-space-4);">No books found</h3>
+            <p style="color: var(--ft-text-tertiary); margin-bottom: var(--ft-space-6); padding: var(--ft-space-2) var(--ft-space-4);">Try adjusting your search or filters</p>
+            {% if request.GET.urlencode %}
+            <a href="?" class="o-buttons o-buttons__primary">Clear All Filters</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    {% if books.paginator.num_pages > 1 %}
+    <div style="margin-top: var(--ft-space-8); padding: var(--ft-space-6); display: flex; justify-content: center; background-color: rgba(255, 255, 255, 0.3); border-radius: var(--ft-radius-lg); align-items: center; gap: var(--ft-space-3); flex-wrap: wrap;">
+        {% if books.has_previous %}
+        <a href="?page={{ books.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.author %}&author={{ request.GET.author }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.publisher %}&publisher={{ request.GET.publisher }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}"
+           class="o-buttons o-buttons__secondary">
+            ← Previous
+        </a>
+        {% endif %}
+
+        <span style="padding: 0.75em 1.5em; font-family: var(--ft-font-body); font-weight: 600; color: var(--ft-color-slate);">
+            Page {{ books.number }} of {{ books.paginator.num_pages }}
+        </span>
+
+        {% if books.has_next %}
+        <a href="?page={{ books.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.author %}&author={{ request.GET.author }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.publisher %}&publisher={{ request.GET.publisher }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}"
+           class="o-buttons o-buttons__secondary">
+            Next →
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
